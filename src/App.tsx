@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -7,7 +7,7 @@ import InboxPage from './pages/InboxPage';
 import TicketDetailsPage from './pages/TicketDetailsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import SSOHandler from './components/auth/SSOHandler';
-import { LogOut, Globe, Tag, Inbox } from 'lucide-react';
+import { LogOut, Globe, Tag, Inbox, Menu, X } from 'lucide-react';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { token, isLoading } = useAuth();
@@ -19,11 +19,26 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AppShell = ({ children }: { children: React.ReactNode }) => {
   const { logout, user } = useAuth();
   const { language, toggleLanguage, t } = useLanguage();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
-      <aside className="w-64 bg-slate-900 text-white flex flex-col">
-        <div className="p-4 text-xl font-bold border-b border-slate-800">SahlDesk App</div>
+    <div className="flex h-screen bg-slate-50 overflow-hidden relative">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <aside className={`fixed inset-y-0 ${language === 'ar' ? 'right-0' : 'left-0'} z-50 w-64 bg-slate-900 text-white flex flex-col transform transition-transform duration-300 md:relative md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : (language === 'ar' ? 'translate-x-full' : '-translate-x-full')}`}>
+        <div className="p-4 text-xl font-bold border-b border-slate-800 flex justify-between items-center">
+          <span>SahlDesk App</span>
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400 hover:text-white">
+            <X size={20} />
+          </button>
+        </div>
         <nav className="flex-1 p-4 space-y-2">
           <Link to="/inbox" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
             <Inbox size={18} /> <span>{t('Inbox')}</span>
@@ -43,6 +58,14 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
         </div>
       </aside>
       <main className="flex-1 overflow-hidden relative flex flex-col">
+        {/* Mobile Header */ }
+        <div className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center shadow-sm">
+          <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 hover:text-slate-900">
+            <Menu size={24} />
+          </button>
+          <span className="mx-4 font-semibold text-slate-800">SahlDesk App</span>
+        </div>
+        
         {children}
       </main>
     </div>

@@ -11,7 +11,7 @@ export default function SSOHandler() {
   useEffect(() => {
     const token = searchParams.get('token');
     const apiKey = searchParams.get('api_key');
-    const target = searchParams.get('target') || '/inbox';
+    const target = searchParams.get('target') || (location.pathname !== '/' ? location.pathname : '/inbox');
 
     if (token && apiKey) {
       // We got an SSO token from WordPress!
