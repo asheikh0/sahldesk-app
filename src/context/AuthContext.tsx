@@ -31,6 +31,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.setItem('apiKey', urlApiKey);
         }
         
+        // CRITICAL: Wipe out any old/invalid token from local storage BEFORE making the API call.
+        // If we leave the GUID token in local storage, our api.ts interceptor will attach it as a Bearer token.
+        // The .NET backend's JWT Middleware will crash trying to parse a GUID as a JWT, returning 401 Unauthorized,
+        // which triggers our frontend interceptor to redirect to /login.
+        localStorage.removeItem('token');
+        setToken(null);
+        
         // Exchange the GUID magic link for a real JWT
         const response = await api.post('/Users/magic-login', { token: urlToken });
         const newToken = response.data.token;
