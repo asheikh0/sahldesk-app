@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
+import { useAuth } from '../../context/AuthContext';
+import { CannedResponse } from '../../types/api';
 import { Paperclip, X } from 'lucide-react';
 import api from '../../services/api';
 
@@ -11,9 +13,19 @@ interface ReplyBoxProps {
 export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
   const { t } = useLanguage();
   const [content, setContent] = useState('');
+  const { isPro } = useAuth();
   const [isInternal, setIsInternal] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [cannedResponses, setCannedResponses] = useState<CannedResponse[]>([]);
+
+  React.useEffect(() => {
+    if (isPro) {
+      api.get('/CannedResponses')
+        .then(res => setCannedResponses(res.data))
+        .catch(err => console.error(err));
+    }
+  }, [isPro]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +59,23 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
   return (
     <div className="bg-white border-t border-slate-200 p-4 sticky bottom-0">
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-3">
+        {isPro && cannedResponses.length > 0 && (
+          <div className="mb-2">
+            <select 
+              className="text-sm border-slate-300 rounded-md text-slate-600 shadow-sm focus:ring-blue-500 focus:border-blue-500 max-w-xs"
+              onChange={(e) => {
+                const text = e.target.value;
+                if(text) setContent(prev => prev + (prev ? '\n\n' : '') + text);
+                e.target.value = "";
+              }}
+            >
+              <option value="">{t('Insert Canned Response...')}</option>
+              {cannedResponses.map(r => (
+                <option key={r.id} value={r.content}>{r.title}</option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className="relative">
           <textarea
             value={content}

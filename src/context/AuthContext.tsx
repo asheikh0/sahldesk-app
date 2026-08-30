@@ -8,6 +8,8 @@ interface AuthContextType {
   login: (data: LoginDto, apiKey: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  isPro: boolean;
+  toggleDevPro: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,6 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return localStorage.getItem('token');
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isPro, setIsPro] = useState(localStorage.getItem('dev_isPro') === 'true');
 
   useEffect(() => {
     // In a real app, verify token with API /me endpoint here.
@@ -35,6 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setIsLoading(false);
   }, [token]);
+
+
+  const toggleDevPro = () => {
+    const newStatus = !isPro;
+    setIsPro(newStatus);
+    localStorage.setItem('dev_isPro', newStatus.toString());
+  };
 
   const login = async (data: LoginDto, apiKey: string) => {
     localStorage.setItem('apiKey', apiKey);
@@ -52,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, isLoading, isPro, toggleDevPro }}>
       {children}
     </AuthContext.Provider>
   );

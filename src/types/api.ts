@@ -4,11 +4,13 @@ export interface User {
   role: string;
   firstName?: string;
   lastName?: string;
+  company?: Company;
 }
 
 export interface Company {
   id: number;
   name: string;
+  plan?: string;
 }
 
 export interface Category {

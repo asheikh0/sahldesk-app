@@ -6,8 +6,12 @@ import LoginPage from './pages/LoginPage';
 import InboxPage from './pages/InboxPage';
 import TicketDetailsPage from './pages/TicketDetailsPage';
 import CategoriesPage from './pages/CategoriesPage';
+import ReportsPage from './pages/ReportsPage';
+import CannedResponsesPage from './pages/CannedResponsesPage';
+import SubStatusesPage from './pages/SubStatusesPage';
+import TeamPage from './pages/TeamPage';
 import SSOHandler from './components/auth/SSOHandler';
-import { LogOut, Globe, Tag, Inbox, Menu, X } from 'lucide-react';
+import { LogOut, Globe, Tag, Inbox, Menu, X, BarChart2, MessageSquare, Activity, Users, Shield } from 'lucide-react';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { token, isLoading } = useAuth();
@@ -17,7 +21,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppShell = ({ children }: { children: React.ReactNode }) => {
-  const { logout, user } = useAuth();
+  const { logout, user, isPro, toggleDevPro } = useAuth();
   const { language, toggleLanguage, t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -46,9 +50,26 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
           <Link to="/categories" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
             <Tag size={18} /> <span>{t('Categories')}</span>
           </Link>
+          <Link to="/reports" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+            <BarChart2 size={18} /> <span>{t('Reports')}</span>
+          </Link>
+          <Link to="/canned-responses" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+            <MessageSquare size={18} /> <span>{t('Canned Responses')}</span>
+          </Link>
+          <Link to="/sub-statuses" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+            <Activity size={18} /> <span>{t('Sub-Statuses')}</span>
+          </Link>
+          <Link to="/users" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+            <Users size={18} /> <span>{t('Team')}</span>
+          </Link>
         </nav>
         <div className="p-4 border-t border-slate-800 text-sm flex flex-col space-y-3">
-          <div className="text-slate-400">{user?.email}</div>
+          <div className="text-slate-400 flex justify-between items-center">
+            <span>{user?.email}</span>
+            <button onClick={toggleDevPro} className="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded flex items-center gap-1" title="Dev Toggle: Plan">
+               <Shield size={12}/> {isPro ? 'Pro' : 'Free'}
+            </button>
+          </div>
           <button onClick={toggleLanguage} className="flex items-center space-x-2 hover:text-white transition-colors text-slate-300 rtl:space-x-reverse">
             <Globe size={16} /> <span>{language === 'en' ? 'عربي' : 'English'}</span>
           </button>
@@ -85,6 +106,10 @@ export default function App() {
             <Route path="/inbox" element={<ProtectedRoute><AppShell><InboxPage /></AppShell></ProtectedRoute>} />
             <Route path="/tickets/:id" element={<ProtectedRoute><AppShell><TicketDetailsPage /></AppShell></ProtectedRoute>} />
             <Route path="/categories" element={<ProtectedRoute><AppShell><CategoriesPage /></AppShell></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute><AppShell><ReportsPage /></AppShell></ProtectedRoute>} />
+            <Route path="/canned-responses" element={<ProtectedRoute><AppShell><CannedResponsesPage /></AppShell></ProtectedRoute>} />
+            <Route path="/sub-statuses" element={<ProtectedRoute><AppShell><SubStatusesPage /></AppShell></ProtectedRoute>} />
+            <Route path="/users" element={<ProtectedRoute><AppShell><TeamPage /></AppShell></ProtectedRoute>} />
             
             <Route path="*" element={<Navigate to="/inbox" replace />} />
           </Routes>
