@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { Ticket, User, Category } from '../types/api';
+import { Ticket, User, Category, TicketSubStatus } from '../types/api';
 import ReplyBox from '../components/tickets/ReplyBox';
 import api from '../services/api';
-import { ArrowLeft, User as UserIcon, Tag, Clock, Lock, ExternalLink } from 'lucide-react';
+import { ArrowLeft, User as UserIcon, Tag, Clock, Lock, ExternalLink, CheckCircle2 } from 'lucide-react';
 
 export default function TicketDetailsPage() {
   const { id } = useParams();
@@ -12,7 +12,10 @@ export default function TicketDetailsPage() {
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [agents, setAgents] = useState<User[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [subStatuses, setSubStatuses] = useState<TicketSubStatus[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const [savingField, setSavingField] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -20,14 +23,16 @@ export default function TicketDetailsPage() {
 
   const fetchData = async () => {
     try {
-      const [ticketRes, agentsRes, catRes] = await Promise.all([
+      const [ticketRes, agentsRes, catRes, subRes] = await Promise.all([
         api.get(`/Tickets/${id}`),
         api.get('/Users/agents'),
-        api.get('/Categories')
+        api.get('/Categories'),
+        api.get('/ticketsubstatuses').catch(() => ({ data: [] }))
       ]);
       setTicket(ticketRes.data);
       setAgents(agentsRes.data);
       setCategories(catRes.data);
+      setSubStatuses(subRes.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -35,22 +40,22 @@ export default function TicketDetailsPage() {
     }
   };
 
-  const updateStatus = async (status: string) => {
+  const updateField = async (field: 'status' | 'agentId' | 'subStatusId', value: any) => {
+    setSavingField(field);
     try {
-      await api.put(`/Tickets/${id}`, { status });
-      setTicket(prev => prev ? { ...prev, status } : null);
+      await api.put(`/Tickets/${id}`, { [field]: value });
+      setTicket(prev => {
+        if (!prev) return null;
+        if (field === 'status') return { ...prev, status: value };
+        if (field === 'agentId') return { ...prev, agent: agents.find(a => a.id === value) || undefined };
+        if (field === 'subStatusId') return { ...prev, subStatus: subStatuses.find(s => s.id === value) || undefined };
+        return prev;
+      });
+      // Show success briefly
+      setTimeout(() => setSavingField(null), 1000);
     } catch (err) {
       console.error(err);
-    }
-  };
-
-  const updateAgent = async (agentId: number | null) => {
-    try {
-      await api.put(`/Tickets/${id}`, { agentId });
-      const newAgent = agents.find(a => a.id === agentId);
-      setTicket(prev => prev ? { ...prev, agent: newAgent } : null);
-    } catch (err) {
-      console.error(err);
+      setSavingField(null);
     }
   };
 
@@ -67,49 +72,86 @@ export default function TicketDetailsPage() {
 
   return (
     <div className="flex flex-col h-full bg-slate-50 relative">
-      {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+      
+      {/* Header Info */}
+      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4 rtl:space-x-reverse">
-          <Link to="/inbox" className="text-slate-400 hover:text-slate-600">
+          <Link to="/inbox" className="text-slate-400 hover:text-slate-600 transition-colors">
             <ArrowLeft size={20} className="rtl:rotate-180" />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">#{ticket.id} - {ticket.subject}</h1>
-            <div className="flex items-center space-x-3 rtl:space-x-reverse text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900 leading-tight">#{ticket.id} - {ticket.subject || (ticket as any).title || (ticket as any).Title || 'No Subject'}</h1>
+            <div className="flex items-center space-x-3 rtl:space-x-reverse text-sm mt-1.5">
               {ticket.category && (
-                <div className="flex items-center text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
+                <div className="flex items-center text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium">
                   <div className="w-2 h-2 rounded-full mr-1.5 rtl:mr-0 rtl:ml-1.5" style={{ backgroundColor: categoryObj?.color || '#cbd5e1' }}></div>
                   {ticket.category}
                 </div>
               )}
-              <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{t('Priority')}: {t(ticket.priority)}</span>
+              <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium">{t('Priority')}: {t(ticket.priority)}</span>
             </div>
           </div>
         </div>
-        
-        <div className="flex items-center space-x-3 rtl:space-x-reverse">
-          <select 
-            value={ticket.status} 
-            onChange={e => updateStatus(e.target.value)}
-            className="border border-slate-300 rounded-md px-3 py-1.5 text-sm bg-white font-medium text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
-          >
-            <option value="Open">{t('Open')}</option>
-            <option value="In Progress">{t('In Progress')}</option>
-            <option value="Pending">{t('Pending')}</option>
-            <option value="Resolved">{t('Resolved')}</option>
-            <option value="Closed">{t('Closed')}</option>
-          </select>
+      </div>
 
-          <select 
-            value={ticket.agent?.id || ''} 
-            onChange={e => updateAgent(e.target.value ? Number(e.target.value) : null)}
-            className="border border-slate-300 rounded-md px-3 py-1.5 text-sm bg-white font-medium text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
-          >
-            <option value="">Unassigned</option>
-            {agents.map(a => (
-              <option key={a.id} value={a.id}>{a.firstName || a.lastName || a.email}</option>
-            ))}
-          </select>
+      {/* Control Action Bar (Sticky) */}
+      <div className="bg-slate-100/80 backdrop-blur-md border-b border-slate-200 px-6 py-3 sticky top-0 z-20 flex items-center shadow-sm">
+        <div className="flex flex-wrap items-center gap-4">
+          
+          <div className="flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600">{t('Status')}</span>
+            <select 
+              value={ticket.status} 
+              onChange={e => updateField('status', e.target.value)}
+              className="px-3 py-1.5 text-sm bg-transparent font-semibold text-slate-900 outline-none w-36 cursor-pointer"
+            >
+              <option value="Open">{t('Open')}</option>
+              <option value="In Progress">{t('In Progress')}</option>
+              <option value="Pending">{t('Pending')}</option>
+              <option value="Resolved">{t('Resolved')}</option>
+              <option value="Closed">{t('Closed')}</option>
+            </select>
+            <div className="w-8 flex justify-center items-center">
+              {savingField === 'status' ? <CheckCircle2 size={16} className="text-green-500 animate-in fade-in" /> : null}
+            </div>
+          </div>
+
+          <div className="flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600"><UserIcon size={14} className="inline mr-1 rtl:ml-1"/> {t('Agent')}</span>
+            <select 
+              value={ticket.agent?.id || ''} 
+              onChange={e => updateField('agentId', e.target.value ? Number(e.target.value) : null)}
+              className="px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none w-48 cursor-pointer"
+            >
+              <option value="">-- {t('Unassigned')} --</option>
+              {agents.map(a => (
+                <option key={a.id} value={a.id}>{a.firstName || a.lastName || a.email}</option>
+              ))}
+            </select>
+            <div className="w-8 flex justify-center items-center">
+              {savingField === 'agentId' ? <CheckCircle2 size={16} className="text-green-500 animate-in fade-in" /> : null}
+            </div>
+          </div>
+
+          {subStatuses.length > 0 && (
+            <div className="flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+              <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600">{t('Sub-Status')}</span>
+              <select 
+                value={ticket.subStatus?.id || ''} 
+                onChange={e => updateField('subStatusId', e.target.value ? Number(e.target.value) : null)}
+                className="px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none w-40 cursor-pointer"
+              >
+                <option value="">-- None --</option>
+                {subStatuses.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+              <div className="w-8 flex justify-center items-center">
+                {savingField === 'subStatusId' ? <CheckCircle2 size={16} className="text-green-500 animate-in fade-in" /> : null}
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
 
@@ -122,45 +164,45 @@ export default function TicketDetailsPage() {
             {/* Original Ticket Description */}
             <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
               <div className="flex justify-between items-start mb-3">
-                <div className="font-semibold text-slate-900">{ticket.customer.firstName || ticket.customer.lastName || ticket.customer.email}</div>
-                <div className="text-xs text-slate-400 flex items-center">
-                  <Clock size={12} className="mr-1 rtl:ml-1" />
+                <div className="font-semibold text-slate-900 text-lg">{ticket.customer.firstName || ticket.customer.lastName || ticket.customer.email}</div>
+                <div className="text-xs text-slate-500 flex items-center bg-slate-100 px-2 py-1 rounded">
+                  <Clock size={12} className="mr-1.5 rtl:ml-1.5" />
                   {new Date(ticket.createdAt).toLocaleString()}
                 </div>
               </div>
-              <div className="text-slate-700 whitespace-pre-wrap">{ticket.description}</div>
+              <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{ticket.description}</div>
             </div>
 
             {/* Comments */}
             {ticket.comments?.map(comment => (
               <div key={comment.id} className={`p-5 rounded-lg shadow-sm border ${
-                comment.isInternal ? 'bg-amber-50/50 border-amber-200 ml-8 rtl:ml-0 rtl:mr-8' :
-                comment.isStaffReply ? 'bg-blue-50 border-blue-200 ml-8 rtl:ml-0 rtl:mr-8' : 
-                'bg-white border-slate-200 mr-8 rtl:mr-0 rtl:ml-8'
+                comment.isInternal ? 'bg-amber-50/60 border-amber-200 ml-12 rtl:ml-0 rtl:mr-12' :
+                comment.isStaffReply ? 'bg-blue-50/60 border-blue-200 ml-12 rtl:ml-0 rtl:mr-12' : 
+                'bg-white border-slate-200 mr-12 rtl:mr-0 rtl:ml-12'
               }`}>
                 <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                    <span className="font-semibold text-slate-900">
+                  <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                    <span className="font-semibold text-slate-900 text-md">
                       {comment.user?.firstName || comment.user?.lastName || comment.user?.email || 'Unknown'}
                     </span>
                     {comment.isInternal && (
-                      <span className="flex items-center text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">
+                      <span className="flex items-center text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded border border-amber-200">
                         <Lock size={10} className="mr-1 rtl:ml-1" /> INTERNAL
                       </span>
                     )}
                     {comment.isStaffReply && !comment.isInternal && (
-                      <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">STAFF</span>
+                      <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded border border-blue-200">STAFF</span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-400">{new Date(comment.createdAt).toLocaleString()}</div>
+                  <div className="text-xs text-slate-500">{new Date(comment.createdAt).toLocaleString()}</div>
                 </div>
                 
-                <div className="text-slate-700 whitespace-pre-wrap">{comment.content}</div>
+                <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{comment.content}</div>
                 
                 {comment.attachmentUrl && (
-                  <div className="mt-3 pt-3 border-t border-slate-200/60">
-                    <a href={comment.attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center text-sm text-blue-600 hover:underline">
-                      <ExternalLink size={14} className="mr-1 rtl:ml-1" /> View Attachment
+                  <div className="mt-4 pt-3 border-t border-slate-200/60">
+                    <a href={comment.attachmentUrl} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline bg-white px-3 py-1.5 rounded border border-blue-100 shadow-sm transition-all">
+                      <ExternalLink size={14} className="mr-2 rtl:ml-2" /> {t('Attachment')}
                     </a>
                   </div>
                 )}
@@ -171,29 +213,29 @@ export default function TicketDetailsPage() {
           {/* Sidebar */}
           <div className="w-full md:w-72 space-y-4">
             <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center">
-                <UserIcon size={16} className="mr-2 rtl:ml-2 text-slate-400" /> Customer Profile
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center">
+                <UserIcon size={14} className="mr-2 rtl:ml-2" /> Customer Profile
               </h3>
-              <div className="space-y-3 text-sm">
+              <div className="space-y-4 text-sm">
                 <div>
-                  <div className="text-slate-500 mb-0.5">Name</div>
-                  <div className="font-medium text-slate-900">{ticket.customer.firstName || ticket.customer.lastName || '-'}</div>
+                  <div className="text-slate-400 mb-1 text-xs uppercase">Name</div>
+                  <div className="font-semibold text-slate-900">{ticket.customer.firstName || ticket.customer.lastName || '-'}</div>
                 </div>
                 <div>
-                  <div className="text-slate-500 mb-0.5">Email</div>
-                  <div className="font-medium text-slate-900">{ticket.customer.email}</div>
+                  <div className="text-slate-400 mb-1 text-xs uppercase">Email</div>
+                  <div className="font-semibold text-slate-900 break-all">{ticket.customer.email}</div>
                 </div>
               </div>
             </div>
 
             {ticket.referenceId && (
               <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 flex items-center">
-                  <Tag size={16} className="mr-2 rtl:ml-2 text-slate-400" /> Reference
+                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center">
+                  <Tag size={14} className="mr-2 rtl:ml-2" /> Reference
                 </h3>
-                <div className="bg-slate-50 border border-slate-200 rounded p-3">
-                  <div className="text-xs text-slate-500 mb-1">WooCommerce Order</div>
-                  <div className="font-medium text-blue-600">#{ticket.referenceId}</div>
+                <div className="bg-blue-50 border border-blue-100 rounded p-3 text-center">
+                  <div className="text-xs text-blue-600 mb-1 font-medium">WooCommerce Order</div>
+                  <div className="font-bold text-blue-800 text-lg">#{ticket.referenceId}</div>
                 </div>
               </div>
             )}

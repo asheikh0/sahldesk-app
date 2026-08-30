@@ -43,7 +43,10 @@ const translations = {
     'Search tickets...': 'Search tickets...',
     'Subject': 'Subject',
     'Description': 'Description',
-    'Attachment': 'Attachment'
+    'Attachment': 'Attachment',
+    'Unassigned': 'Unassigned',
+    'Agent': 'Agent',
+    'Sub-Status': 'Sub-Status'
   },
   ar: {
     'Inbox': 'البريد الوارد',
@@ -79,7 +82,10 @@ const translations = {
     'Search tickets...': 'ابحث في التذاكر...',
     'Subject': 'الموضوع',
     'Description': 'الوصف',
-    'Attachment': 'المرفق'
+    'Attachment': 'المرفق',
+    'Unassigned': 'غير معين',
+    'Agent': 'الوكيل',
+    'Sub-Status': 'الحالة الفرعية'
   }
 };
 
