@@ -35,7 +35,15 @@ const translations = {
     'Save': 'Save',
     'Cancel': 'Cancel',
     'Delete': 'Delete',
-    'Are you sure you want to delete this category?': 'Are you sure you want to delete this category?'
+    'Are you sure you want to delete this category?': 'Are you sure you want to delete this category?',
+    'New Ticket': 'New Ticket',
+    'Select Category': 'Select Category',
+    'Create Ticket': 'Create Ticket',
+    'All': 'All',
+    'Search tickets...': 'Search tickets...',
+    'Subject': 'Subject',
+    'Description': 'Description',
+    'Attachment': 'Attachment'
   },
   ar: {
     'Inbox': 'البريد الوارد',
@@ -63,7 +71,15 @@ const translations = {
     'Save': 'حفظ',
     'Cancel': 'إلغاء',
     'Delete': 'حذف',
-    'Are you sure you want to delete this category?': 'هل أنت متأكد أنك تريد حذف هذا التصنيف؟'
+    'Are you sure you want to delete this category?': 'هل أنت متأكد أنك تريد حذف هذا التصنيف؟',
+    'New Ticket': 'تذكرة جديدة',
+    'Select Category': 'اختر التصنيف',
+    'Create Ticket': 'إنشاء تذكرة',
+    'All': 'الكل',
+    'Search tickets...': 'ابحث في التذاكر...',
+    'Subject': 'الموضوع',
+    'Description': 'الوصف',
+    'Attachment': 'المرفق'
   }
 };
 

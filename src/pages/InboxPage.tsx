@@ -144,8 +144,13 @@ export default function InboxPage() {
                     #{ticket.id}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-bold text-slate-900 mb-1">
-                      {ticket.subject || (ticket as any).title || (ticket as any).Title || 'No Subject'}
+                    <div className="max-w-[280px] sm:max-w-[400px] lg:max-w-[550px] mb-1">
+                      <span 
+                        className="block font-semibold text-slate-800 truncate hover:text-blue-600 transition-colors"
+                        title={ticket.subject || (ticket as any).title || (ticket as any).Title || 'No Subject'}
+                      >
+                        {ticket.subject || (ticket as any).title || (ticket as any).Title || 'No Subject'}
+                      </span>
                     </div>
                     <div className="flex flex-wrap gap-2 text-xs">
                       {ticket.category && (
