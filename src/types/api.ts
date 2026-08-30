@@ -15,6 +15,8 @@ export interface Category {
   id: number;
   name: string;
   companyId: number;
+  color?: string;
+  ticketCount?: number;
 }
 
 export interface TicketSubStatus {
@@ -30,6 +32,8 @@ export interface Comment {
   content: string;
   createdAt: string;
   isStaffReply: boolean;
+  isInternal?: boolean;
+  attachmentUrl?: string;
   user: User;
 }
 
@@ -40,6 +44,8 @@ export interface Ticket {
   status: string;
   priority: string;
   createdAt: string;
+  category?: string;
+  referenceId?: string;
   customer: User;
   agent?: User;
   subStatus?: TicketSubStatus;

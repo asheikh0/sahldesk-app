@@ -1,28 +1,93 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+
+type Language = 'en' | 'ar';
 
 interface LanguageContextType {
-  language: 'en' | 'ar';
+  language: Language;
   toggleLanguage: () => void;
+  t: (key: string) => string;
 }
+
+const translations = {
+  en: {
+    'Inbox': 'Inbox',
+    'Categories': 'Categories',
+    'Sign Out': 'Sign Out',
+    'Status': 'Status',
+    'Open': 'Open',
+    'In Progress': 'In Progress',
+    'Pending': 'Pending',
+    'Resolved': 'Resolved',
+    'Closed': 'Closed',
+    'Priority': 'Priority',
+    'Low': 'Low',
+    'Medium': 'Medium',
+    'High': 'High',
+    'Internal Note (Staff only)': 'Internal Note (Staff only)',
+    'Submit Reply': 'Submit Reply',
+    'Attach File': 'Attach File',
+    'Add Category': 'Add Category',
+    'Edit Category': 'Edit Category',
+    'Category Name': 'Category Name',
+    'Color': 'Color',
+    'Tickets': 'Tickets',
+    'Actions': 'Actions',
+    'Save': 'Save',
+    'Cancel': 'Cancel',
+    'Delete': 'Delete',
+    'Are you sure you want to delete this category?': 'Are you sure you want to delete this category?'
+  },
+  ar: {
+    'Inbox': 'البريد الوارد',
+    'Categories': 'التصنيفات',
+    'Sign Out': 'تسجيل الخروج',
+    'Status': 'الحالة',
+    'Open': 'مفتوح',
+    'In Progress': 'قيد المعالجة',
+    'Pending': 'قيد الانتظار',
+    'Resolved': 'تم الحل',
+    'Closed': 'مغلق',
+    'Priority': 'الأولوية',
+    'Low': 'منخفض',
+    'Medium': 'متوسط',
+    'High': 'عالي',
+    'Internal Note (Staff only)': 'ملاحظة داخلية (فريق العمل فقط)',
+    'Submit Reply': 'إرسال الرد',
+    'Attach File': 'إرفاق ملف',
+    'Add Category': 'إضافة تصنيف',
+    'Edit Category': 'تعديل تصنيف',
+    'Category Name': 'اسم التصنيف',
+    'Color': 'اللون',
+    'Tickets': 'التذاكر',
+    'Actions': 'الإجراءات',
+    'Save': 'حفظ',
+    'Cancel': 'إلغاء',
+    'Delete': 'حذف',
+    'Are you sure you want to delete this category?': 'هل أنت متأكد أنك تريد حذف هذا التصنيف؟'
+  }
+};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<'en' | 'ar'>(() => {
-    return (localStorage.getItem('language') as 'en' | 'ar') || 'en';
-  });
+  const [language, setLanguage] = useState<Language>('en');
 
-  useEffect(() => {
-    localStorage.setItem('language', language);
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-  }, [language]);
+  const toggleLanguage = () => {
+    setLanguage(prev => (prev === 'en' ? 'ar' : 'en'));
+  };
 
-  const toggleLanguage = () => setLanguage(l => l === 'en' ? 'ar' : 'en');
+  const t = (key: string) => {
+    // @ts-ignore
+    return translations[language][key] || key;
+  };
+
+  const dir = language === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage }}>
-      {children}
+    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+      <div dir={dir} className={language === 'ar' ? 'font-cairo' : 'font-inter'}>
+        {children}
+      </div>
     </LanguageContext.Provider>
   );
 };
