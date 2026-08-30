@@ -54,11 +54,24 @@ export interface Ticket {
   comments?: Comment[];
 }
 
+export interface StatusCountDto { status: string; count: number; }
+export interface AgentPerformanceDto { agentName: string; assignedCount: number; resolvedCount: number; }
+export interface CategoryCountDto { category: string; count: number; }
+export interface PriorityCountDto { priority: string; count: number; }
+export interface VolumeTrendDto { date: string; count: number; }
+
 export interface DashboardStatsDto {
   totalTickets: number;
   openTickets: number;
-  resolvedTickets: number;
-  averageResolutionTimeHours: number;
+  inProgressTickets: number;
+  pendingTickets: number;
+  closedTickets: number;
+  averageResolutionTimeHrs: number;
+  statusSummary: StatusCountDto[];
+  agentPerformance: AgentPerformanceDto[];
+  categoryDistribution: CategoryCountDto[];
+  priorityDistribution: PriorityCountDto[];
+  volumeTrend: VolumeTrendDto[];
 }
 
 export interface CannedResponse {
