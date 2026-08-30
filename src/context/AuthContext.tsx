@@ -5,9 +5,12 @@ import api from '../services/api';
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isAuthenticated: boolean;
   login: (data: LoginDto, apiKey: string) => Promise<void>;
+  loginWithToken: (token: string, apiKey: string) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
+  loading: boolean;
   isPro: boolean;
   toggleDevPro: () => void;
 }
@@ -21,60 +24,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isPro, setIsPro] = useState(localStorage.getItem('dev_isPro') === 'true');
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const urlToken = params.get('token');
-    const urlApiKey = params.get('api_key');
-
-    const handleMagicLink = async () => {
-      try {
-        if (urlApiKey) {
-          localStorage.setItem('apiKey', urlApiKey);
-        }
-        
-        // CRITICAL: Wipe out any old/invalid token from local storage BEFORE making the API call.
-        // If we leave the GUID token in local storage, our api.ts interceptor will attach it as a Bearer token.
-        // The .NET backend's JWT Middleware will crash trying to parse a GUID as a JWT, returning 401 Unauthorized,
-        // which triggers our frontend interceptor to redirect to /login.
-        localStorage.removeItem('token');
-        setToken(null);
-        
-        // Exchange the GUID magic link for a real JWT
-        const response = await api.post('/Users/magic-login', { token: urlToken });
-        const newToken = response.data.token;
-        
-        localStorage.setItem('token', newToken);
-        setToken(newToken);
-        setUser({ id: 1, email: response.data.name || 'admin@sahldesk.com', role: response.data.role || 'Admin' });
-        
-        // Clean URL after success
-        const url = new URL(window.location.href);
-        url.searchParams.delete('token');
-        url.searchParams.delete('api_key');
-        window.history.replaceState({}, document.title, url.toString());
-
-      } catch (err: any) {
-        console.error("Magic login failed:", err);
-        const msg = err.response?.data?.message || "The magic link has expired or is invalid. Please log in or request a new link.";
-        alert(msg);
-        
-        // Clean URL after failure so user doesn't stay stuck with broken tokens in URL
-        const url = new URL(window.location.href);
-        url.searchParams.delete('token');
-        url.searchParams.delete('api_key');
-        window.history.replaceState({}, document.title, url.toString());
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (urlToken) {
-      handleMagicLink();
-    } else {
-      if (token) {
-        setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
-      }
-      setIsLoading(false);
+    if (token) {
+      setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
     }
+    setIsLoading(false);
   }, []); // Run once on mount
 
 
@@ -93,6 +46,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(response.data.user || { id: 1, email: data.email, role: 'Admin' });
   };
 
+  const loginWithToken = async (newToken: string, apiKey: string) => {
+    if (apiKey) localStorage.setItem('apiKey', apiKey);
+    localStorage.setItem('token', newToken);
+    setToken(newToken);
+    setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
@@ -100,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading, isPro, toggleDevPro }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, loginWithToken, logout, isLoading, loading: isLoading, isPro, toggleDevPro }}>
       {children}
     </AuthContext.Provider>
   );

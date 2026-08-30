@@ -10,15 +10,11 @@ import ReportsPage from './pages/ReportsPage';
 import CannedResponsesPage from './pages/CannedResponsesPage';
 import SubStatusesPage from './pages/SubStatusesPage';
 import TeamPage from './pages/TeamPage';
-import SSOHandler from './components/auth/SSOHandler';
+import { SSOHandler } from './components/auth/SSOHandler';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { LogOut, Globe, Tag, Inbox, Menu, X, BarChart2, MessageSquare, Activity, Users, Shield } from 'lucide-react';
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { token, isLoading } = useAuth();
-  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
-  if (!token) return <Navigate to="/login" replace />;
-  return <>{children}</>;
-};
+
 
 const AppShell = ({ children }: { children: React.ReactNode }) => {
   const { logout, user, isPro, toggleDevPro } = useAuth();
