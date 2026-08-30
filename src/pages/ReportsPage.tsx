@@ -34,14 +34,15 @@ export default function ReportsPage() {
   const { isPro } = useAuth();
   const { t } = useLanguage();
   const [stats, setStats] = useState<DashboardStatsDto | null>(null);
+  const [days, setDays] = useState(30);
 
   useEffect(() => {
     if (isPro) {
-      api.get('/Reports/dashboard')
+      api.get(`/Reports/dashboard?days=${days}`)
         .then(res => setStats(res.data))
         .catch(err => console.error("Failed to fetch dashboard stats", err));
     }
-  }, [isPro]);
+  }, [isPro, days]);
 
   if (!isPro) {
     return <ProFeatureGate featureName="Reports & Analytics" />;
@@ -121,7 +122,23 @@ export default function ReportsPage() {
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto w-full overflow-y-auto pb-20">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">{t('Reports & Analytics')}</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-slate-800">{t('Reports & Analytics')}</h1>
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-slate-600">{t('Timeframe')}:</label>
+          <select 
+            className="border-slate-300 rounded-md text-sm shadow-sm focus:ring-blue-500 focus:border-blue-500 font-medium text-slate-700"
+            value={days}
+            onChange={(e) => setDays(Number(e.target.value))}
+          >
+            <option value={7}>{t('Last 7 Days')}</option>
+            <option value={30}>{t('Last 30 Days')}</option>
+            <option value={90}>{t('Last 90 Days')}</option>
+            <option value={365}>{t('Last Year')}</option>
+            <option value={0}>{t('All Time')}</option>
+          </select>
+        </div>
+      </div>
       
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
