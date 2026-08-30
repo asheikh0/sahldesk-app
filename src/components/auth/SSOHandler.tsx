@@ -11,21 +11,13 @@ export default function SSOHandler() {
   useEffect(() => {
     const token = searchParams.get('token');
     const apiKey = searchParams.get('api_key');
-    const target = searchParams.get('target') || (location.pathname !== '/' ? location.pathname : '/inbox');
 
     if (token && apiKey) {
-      // We got an SSO token from WordPress!
-      localStorage.setItem('token', token);
-      localStorage.setItem('apiKey', apiKey);
-      
-      // Clean up the URL so the token doesn't stay in the address bar
+      // Token is already handled by AuthContext synchronously.
+      // Just clean up the URL so the token doesn't stay in the address bar.
       window.history.replaceState({}, document.title, location.pathname);
-      
-      // Trigger a page reload to re-hydrate the auth context properly 
-      // or redirect immediately since we stored it.
-      window.location.href = target;
     }
-  }, [searchParams, location, navigate]);
+  }, [searchParams, location]);
 
   return null;
 }

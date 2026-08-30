@@ -14,7 +14,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token');
+    const urlApiKey = params.get('api_key');
+    if (urlToken && urlApiKey) {
+      localStorage.setItem('token', urlToken);
+      localStorage.setItem('apiKey', urlApiKey);
+      return urlToken;
+    }
+    return localStorage.getItem('token');
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
