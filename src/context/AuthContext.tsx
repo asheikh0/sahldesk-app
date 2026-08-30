@@ -52,8 +52,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         url.searchParams.delete('api_key');
         window.history.replaceState({}, document.title, url.toString());
 
-      } catch (err) {
+      } catch (err: any) {
         console.error("Magic login failed:", err);
+        const msg = err.response?.data?.message || "The magic link has expired or is invalid. Please log in or request a new link.";
+        alert(msg);
+        
+        // Clean URL after failure so user doesn't stay stuck with broken tokens in URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('token');
+        url.searchParams.delete('api_key');
+        window.history.replaceState({}, document.title, url.toString());
       } finally {
         setIsLoading(false);
       }
