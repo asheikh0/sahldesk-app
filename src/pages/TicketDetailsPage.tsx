@@ -70,6 +70,13 @@ export default function TicketDetailsPage() {
 
   const categoryObj = categories.find(c => c.name === ticket.category);
 
+  const resolveAttachmentUrl = (url?: string) => {
+    if (!url) return null;
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const apiBase = (import.meta.env.VITE_API_BASE_URL || 'https://staging-api.sahldesk.com/api/v1').replace(/\/api(\/v1)?\/?$/, '');
+    return `${apiBase}${url.startsWith('/') ? '' : '/'}${url}`;
+  };
+
   return (
     <div className="flex flex-col h-full bg-slate-50 relative">
       
@@ -171,6 +178,24 @@ export default function TicketDetailsPage() {
                 </div>
               </div>
               <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{ticket.description}</div>
+              
+              {((ticket as any).attachmentUrl || (ticket as any).AttachmentUrl) && (() => {
+                const url = resolveAttachmentUrl((ticket as any).attachmentUrl || (ticket as any).AttachmentUrl);
+                const isImage = url?.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+                return (
+                  <div className="mt-4 pt-3 border-t border-slate-200/60">
+                    {isImage ? (
+                      <a href={url || undefined} target="_blank" rel="noreferrer" className="block max-w-sm">
+                        <img src={url || undefined} alt="Attachment" className="rounded-lg border border-slate-200 shadow-sm max-h-48 object-cover" />
+                      </a>
+                    ) : (
+                      <a href={url || '#'} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline bg-white px-3 py-1.5 rounded border border-blue-100 shadow-sm transition-all">
+                        <ExternalLink size={14} className="mr-2 rtl:ml-2" /> {t('Attachment')}
+                      </a>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Comments */}
@@ -199,13 +224,23 @@ export default function TicketDetailsPage() {
                 
                 <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{comment.content}</div>
                 
-                {comment.attachmentUrl && (
-                  <div className="mt-4 pt-3 border-t border-slate-200/60">
-                    <a href={comment.attachmentUrl} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline bg-white px-3 py-1.5 rounded border border-blue-100 shadow-sm transition-all">
-                      <ExternalLink size={14} className="mr-2 rtl:ml-2" /> {t('Attachment')}
-                    </a>
-                  </div>
-                )}
+                {((comment as any).attachmentUrl || (comment as any).AttachmentUrl) && (() => {
+                  const url = resolveAttachmentUrl((comment as any).attachmentUrl || (comment as any).AttachmentUrl);
+                  const isImage = url?.match(/\.(jpeg|jpg|gif|png|webp)$/i);
+                  return (
+                    <div className="mt-4 pt-3 border-t border-slate-200/60">
+                      {isImage ? (
+                        <a href={url || undefined} target="_blank" rel="noreferrer" className="block max-w-sm">
+                          <img src={url || undefined} alt="Attachment" className="rounded-lg border border-slate-200 shadow-sm max-h-48 object-cover" />
+                        </a>
+                      ) : (
+                        <a href={url || '#'} target="_blank" rel="noreferrer" className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline bg-white px-3 py-1.5 rounded border border-blue-100 shadow-sm transition-all">
+                          <ExternalLink size={14} className="mr-2 rtl:ml-2" /> {t('Attachment')}
+                        </a>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>

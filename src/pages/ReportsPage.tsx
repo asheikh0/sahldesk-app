@@ -200,7 +200,7 @@ export default function ReportsPage() {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
           <h3 className="text-lg font-bold text-slate-700 mb-6">{t('Agent Performance')}</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
+            <table className="w-full min-w-[550px] text-start rtl:text-end rtl:text-left ltr:text-right ltr:text-left text-sm text-slate-600">
               <thead className="bg-slate-50 text-slate-700 text-xs uppercase font-semibold">
                 <tr>
                   <th className="px-6 py-4 rounded-tl-lg">{t('Agent Name')}</th>

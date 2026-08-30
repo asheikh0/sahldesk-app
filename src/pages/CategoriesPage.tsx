@@ -100,8 +100,8 @@ export default function CategoriesPage() {
         </div>
 
         {/* List */}
-        <div className="md:col-span-2 bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-          <table className="min-w-full divide-y divide-slate-200">
+        <div className="md:col-span-2 bg-white rounded-lg shadow-sm border border-slate-200 overflow-x-auto w-full">
+          <table className="w-full min-w-[550px] divide-y divide-slate-200">
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Category Name')}</th>

@@ -114,7 +114,7 @@ export default function InboxPage() {
       </div>
 
       <div className="bg-white rounded-b-lg shadow-sm border border-slate-200 flex-1 overflow-auto">
-        <table className="min-w-full divide-y divide-slate-200">
+        <table className="w-full min-w-[550px] divide-y divide-slate-200">
           <thead className="bg-slate-50 sticky top-0 z-10">
             <tr>
               <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider w-20">ID</th>

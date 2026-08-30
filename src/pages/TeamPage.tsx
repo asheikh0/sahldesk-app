@@ -35,8 +35,8 @@ export default function TeamPage() {
     <div className="p-6 max-w-5xl mx-auto w-full">
       <h1 className="text-2xl font-bold text-slate-800 mb-6">{t('Team Roles Management')}</h1>
       
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-        <table className="w-full text-left text-sm text-slate-600">
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-x-auto w-full">
+        <table className="w-full min-w-[550px] text-start rtl:text-end rtl:text-left ltr:text-right ltr:text-left text-sm text-slate-600">
           <thead className="bg-slate-50 text-slate-700 text-xs uppercase">
             <tr>
               <th className="px-6 py-3">{t('User')}</th>
@@ -55,9 +55,9 @@ export default function TeamPage() {
                     onChange={(e) => handleRoleChange(u.id, e.target.value)}
                     className="border-slate-300 rounded-md text-sm shadow-sm"
                   >
-                    <option value="Admin">Admin</option>
-                    <option value="Agent">Agent</option>
-                    <option value="Customer">Customer</option>
+                    <option value="Admin">{t('role_admin') || 'Admin'}</option>
+                    <option value="Agent">{t('role_agent') || 'Agent'}</option>
+                    <option value="Customer">{t('role_customer') || 'Customer'}</option>
                   </select>
                 </td>
               </tr>
