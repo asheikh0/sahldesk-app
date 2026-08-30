@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', sans-serif;
+}
+
+html[dir="rtl"] {
+  font-family: 'Cairo', sans-serif;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900;
+}
