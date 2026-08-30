@@ -16,28 +16,51 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(() => {
-    const params = new URLSearchParams(window.location.search);
-    const urlToken = params.get('token');
-    const urlApiKey = params.get('api_key');
-    if (urlToken && urlApiKey) {
-      localStorage.setItem('token', urlToken);
-      localStorage.setItem('apiKey', urlApiKey);
-      return urlToken;
-    }
-    return localStorage.getItem('token');
-  });
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
   const [isPro, setIsPro] = useState(localStorage.getItem('dev_isPro') === 'true');
 
   useEffect(() => {
-    // In a real app, verify token with API /me endpoint here.
-    // For now, if we have a token, we assume logged in.
-    if (token) {
-      setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token');
+    const urlApiKey = params.get('api_key');
+
+    const handleMagicLink = async () => {
+      try {
+        if (urlApiKey) {
+          localStorage.setItem('apiKey', urlApiKey);
+        }
+        
+        // Exchange the GUID magic link for a real JWT
+        const response = await api.post('/Users/magic-login', { token: urlToken });
+        const newToken = response.data.token;
+        
+        localStorage.setItem('token', newToken);
+        setToken(newToken);
+        setUser({ id: 1, email: response.data.name || 'admin@sahldesk.com', role: response.data.role || 'Admin' });
+        
+        // Clean URL after success
+        const url = new URL(window.location.href);
+        url.searchParams.delete('token');
+        url.searchParams.delete('api_key');
+        window.history.replaceState({}, document.title, url.toString());
+
+      } catch (err) {
+        console.error("Magic login failed:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (urlToken) {
+      handleMagicLink();
+    } else {
+      if (token) {
+        setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+      }
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [token]);
+  }, []); // Run once on mount
 
 
   const toggleDevPro = () => {
