@@ -167,7 +167,7 @@ export default function TicketDetailsPage() {
                 <div className="font-semibold text-slate-900 text-lg">{ticket.customer.firstName || ticket.customer.lastName || ticket.customer.email}</div>
                 <div className="text-xs text-slate-500 flex items-center bg-slate-100 px-2 py-1 rounded">
                   <Clock size={12} className="mr-1.5 rtl:ml-1.5" />
-                  {new Date(ticket.createdAt).toLocaleString()}
+                  {new Date(ticket.createdDate).toLocaleString()}
                 </div>
               </div>
               <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{ticket.description}</div>
@@ -194,7 +194,7 @@ export default function TicketDetailsPage() {
                       <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded border border-blue-200">STAFF</span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-500">{new Date(comment.createdAt).toLocaleString()}</div>
+                  <div className="text-xs text-slate-500">{new Date(comment.createdDate).toLocaleString()}</div>
                 </div>
                 
                 <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{comment.content}</div>

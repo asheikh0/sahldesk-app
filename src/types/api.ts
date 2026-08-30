@@ -30,7 +30,7 @@ export interface Comment {
   id: number;
   ticketId: number;
   content: string;
-  createdAt: string;
+  createdDate: string;
   isStaffReply: boolean;
   isInternal?: boolean;
   attachmentUrl?: string;
@@ -43,7 +43,7 @@ export interface Ticket {
   description: string;
   status: string;
   priority: string;
-  createdAt: string;
+  createdDate: string;
   category?: string;
   referenceId?: string;
   customer: User;

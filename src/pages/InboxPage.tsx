@@ -179,7 +179,7 @@ export default function InboxPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                    {new Date(ticket.createdAt).toLocaleDateString()}
+                    {new Date(ticket.createdDate).toLocaleDateString()}
                   </td>
                 </tr>
               ))
