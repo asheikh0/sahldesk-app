@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 
 
 export default function SSOHandler() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const location = useLocation();
   // login not needed here as we reload
 
