@@ -105,8 +105,7 @@ export default function CategoriesPage() {
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Category Name')}</th>
-                <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Tickets')}</th>
-                <th className="px-6 py-3 text-end text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Actions')}</th>
+                                <th className="px-6 py-3 text-end text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Actions')}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-slate-200">
@@ -118,9 +117,7 @@ export default function CategoriesPage() {
                       <span className="text-sm font-medium text-slate-900">{cat.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                    {cat.ticketCount || 0}
-                  </td>
+                  
                   <td className="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-3 rtl:space-x-reverse">
                     <button onClick={() => handleEdit(cat)} className="text-indigo-600 hover:text-indigo-900">{t('Edit Category')}</button>
                     <button onClick={() => handleDelete(cat.id)} className="text-red-600 hover:text-red-900">{t('Delete')}</button>

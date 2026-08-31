@@ -12,6 +12,7 @@ export default function SubStatusesPage() {
   const [subStatuses, setSubStatuses] = useState<TicketSubStatus[]>([]);
   const [name, setName] = useState('');
   const [color, setColor] = useState('#2563eb');
+  const [parentStatus, setParentStatus] = useState('Open');
 
   useEffect(() => {
     if (isPro) {
@@ -24,7 +25,7 @@ export default function SubStatusesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await api.post('/ticketsubstatuses', { name, color });
+      const res = await api.post('/ticketsubstatuses', { name, color, parentStatus });
       setSubStatuses([...subStatuses, res.data]);
       setName('');
     } catch (error) {
@@ -51,14 +52,28 @@ export default function SubStatusesPage() {
       
       <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mb-8">
         <h2 className="text-lg font-semibold mb-4">{t('Add Sub-Status')}</h2>
-        <form onSubmit={handleSubmit} className="flex space-x-4 items-end rtl:space-x-reverse">
-          <div className="flex-1">
+        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-end rtl:space-x-reverse">
+          <div className="flex-1 w-full">
+            <label className="block text-sm font-medium text-slate-700 mb-1">{t('Parent Status')}</label>
+            <select 
+              value={parentStatus} 
+              onChange={e => setParentStatus(e.target.value)}
+              className="w-full border-slate-300 rounded-md shadow-sm h-10"
+            >
+              <option value="Open">{t('Open')}</option>
+              <option value="In Progress">{t('In Progress')}</option>
+              <option value="Pending">{t('Pending')}</option>
+              <option value="Resolved">{t('Resolved')}</option>
+              <option value="Closed">{t('Closed')}</option>
+            </select>
+          </div>
+          <div className="flex-1 w-full">
             <label className="block text-sm font-medium text-slate-700 mb-1">{t('Name')}</label>
             <input 
               required
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full border-slate-300 rounded-md shadow-sm" 
+              className="w-full border-slate-300 rounded-md shadow-sm h-10" 
             />
           </div>
           <div>
@@ -70,16 +85,17 @@ export default function SubStatusesPage() {
               className="h-10 w-14 rounded cursor-pointer" 
             />
           </div>
-          <button type="submit" className="bg-blue-600 text-white px-6 py-2 h-10 rounded-md hover:bg-blue-700">
+          <button type="submit" className="w-full md:w-auto bg-blue-600 text-white px-6 py-2 h-10 rounded-md hover:bg-blue-700">
             {t('Save')}
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden overflow-x-auto">
         <table className="w-full text-left text-sm text-slate-600">
           <thead className="bg-slate-50 text-slate-700 text-xs uppercase">
             <tr>
+              <th className="px-6 py-3">{t('Parent Status')}</th>
               <th className="px-6 py-3">{t('Sub-Status')}</th>
               <th className="px-6 py-3 text-right">{t('Actions')}</th>
             </tr>
@@ -87,6 +103,7 @@ export default function SubStatusesPage() {
           <tbody className="divide-y divide-slate-200">
             {subStatuses.map(s => (
               <tr key={s.id} className="hover:bg-slate-50">
+                <td className="px-6 py-4 font-medium">{t(s.parentStatus || 'Open')}</td>
                 <td className="px-6 py-4">
                   <span 
                     className="px-3 py-1 rounded-full text-xs font-medium text-white"

@@ -117,11 +117,11 @@ export default function InboxPage() {
         <table className="w-full min-w-[550px] divide-y divide-slate-200">
           <thead className="bg-slate-50 sticky top-0 z-10">
             <tr>
-              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider w-20">ID</th>
-              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">Subject & Details</th>
-              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">Customer / Agent</th>
-              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
+              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider w-20">{t('ID')}</th>
+              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Subject & Details')}</th>
+              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Customer / Agent')}</th>
+              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Status')}</th>
+              <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Date')}</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-slate-200">

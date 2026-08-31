@@ -23,6 +23,7 @@ export interface Category {
 
 export interface TicketSubStatus {
   id: number;
+  parentStatus: string;
   name: string;
   color: string;
   companyId: number;
