@@ -77,7 +77,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
             <LogOut size={16} /> <span>{t('Sign Out')}</span>
           </button>
         </div>
-      </aside>
+      </aside>}
       <main className="flex-1 overflow-hidden relative flex flex-col">
         {/* Mobile Header */ }
         {!isEmbedded && <div className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center shadow-sm">
