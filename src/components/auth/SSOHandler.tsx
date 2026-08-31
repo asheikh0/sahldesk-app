@@ -52,7 +52,7 @@ export const SSOHandler = () => {
         }
       } catch (err) {
         console.error('Magic Link / SSO Authentication failed:', err);
-        navigate('/login', { replace: true });
+        navigate('/login?from=sso_catch', { replace: true });
       }
     };
 

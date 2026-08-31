@@ -20,8 +20,11 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  // Backup check directly against localStorage to completely bypass any React Context rendering race conditions
+  const hasLocalToken = !!localStorage.getItem('token');
+
+  if (!isAuthenticated && !hasLocalToken) {
+    return <Navigate to="/login?from=protected" state={{ from: location }} replace />;
   }
 
   return children;
