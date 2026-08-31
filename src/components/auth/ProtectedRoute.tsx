@@ -6,10 +6,11 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
-  // If URL has token or magic_token, wait for SSOHandler to complete authentication
-  const hasSSOParams = searchParams.has('token') || searchParams.has('magic_token');
+  const tokenParam = searchParams.get('token')?.trim();
+  const magicTokenParam = searchParams.get('magic_token')?.trim();
+  const hasValidSSOParams = Boolean(tokenParam || magicTokenParam);
 
-  if (loading || hasSSOParams) {
+  if (loading || hasValidSSOParams) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="text-center">
@@ -20,11 +21,8 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     );
   }
 
-  // Backup check directly against localStorage to completely bypass any React Context rendering race conditions
-  const hasLocalToken = !!localStorage.getItem('token');
-
-  if (!isAuthenticated && !hasLocalToken) {
-    return <Navigate to="/login?from=protected" state={{ from: location }} replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
