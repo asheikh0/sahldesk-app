@@ -68,7 +68,11 @@ const translations = {
     'Add New Response': 'Add New Response',
     'Title': 'Title',
     'Content': 'Content',
-    'Save Response': 'Save Response'
+    'Save Response': 'Save Response',
+    'Agent Name': 'Agent Name',
+    'Assigned Count': 'Assigned Count',
+    'Resolved Count': 'Resolved Count',
+    'No agent performance data available yet.': 'No agent performance data available yet.'
   },
     ar: {
     'Inbox': 'البريد الوارد',
@@ -141,7 +145,11 @@ const translations = {
     'Add New Response': 'إضافة رد جديد',
     'Title': 'العنوان',
     'Content': 'المحتوى',
-    'Save Response': 'حفظ الرد'
+    'Save Response': 'حفظ الرد',
+    'Agent Name': 'اسم الموظف',
+    'Assigned Count': 'العدد المعين',
+    'Resolved Count': 'العدد المحلول',
+    'No agent performance data available yet.': 'لا تتوفر بيانات أداء للموظفين حتى الآن.'
   }
 };
 

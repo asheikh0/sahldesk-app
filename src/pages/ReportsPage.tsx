@@ -224,7 +224,7 @@ export default function ReportsPage() {
                 {(!stats?.agentPerformance || stats.agentPerformance.length === 0) && (
                   <tr>
                     <td colSpan={3} className="px-6 py-8 text-center text-slate-500">
-                      No agent performance data available yet.
+                      {t('No agent performance data available yet.')}
                     </td>
                   </tr>
                 )}
