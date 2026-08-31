@@ -8,7 +8,10 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
 
   const tokenParam = searchParams.get('token')?.trim();
   const magicTokenParam = searchParams.get('magic_token')?.trim();
-  const hasValidSSOParams = Boolean(tokenParam || magicTokenParam);
+  const apiKeyParam = searchParams.get('api_key')?.trim();
+  const adminEmailParam = searchParams.get('admin_email')?.trim();
+  
+  const hasValidSSOParams = Boolean(tokenParam || magicTokenParam || (apiKeyParam && adminEmailParam));
 
   if (loading || hasValidSSOParams) {
     return (

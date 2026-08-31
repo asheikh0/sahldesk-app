@@ -39,16 +39,20 @@ export const SSOHandler = () => {
 
         if (finalJwt) {
           await loginWithToken(finalJwt, apiKey);
-          const cleanSearch = new URLSearchParams(location.search);
-          cleanSearch.delete('token');
-          cleanSearch.delete('magic_token');
-          cleanSearch.delete('admin_email');
-          cleanSearch.delete('admin_name');
-          const cleanPath = location.pathname + (cleanSearch.toString() ? `?${cleanSearch.toString()}` : '');
-          navigate(cleanPath, { replace: true });
         }
       } catch (err) {
         console.error('SSO Authentication failed:', err);
+      } finally {
+        // Always strip parameters to break infinite load loops on both success and failure
+        const cleanSearch = new URLSearchParams(location.search);
+        cleanSearch.delete('token');
+        cleanSearch.delete('magic_token');
+        cleanSearch.delete('admin_email');
+        cleanSearch.delete('admin_name');
+        // keep api_key if needed for the app, but remove the auth triggers
+        
+        const cleanPath = location.pathname + (cleanSearch.toString() ? `?${cleanSearch.toString()}` : '');
+        navigate(cleanPath, { replace: true });
       }
     };
 
