@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { Ticket, Category } from '../types/api';
 import { useLanguage } from '../context/LanguageContext';
@@ -8,6 +8,7 @@ import { Plus, Search } from 'lucide-react';
 
 export default function InboxPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useLanguage();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -18,7 +19,7 @@ export default function InboxPage() {
   const [searchQuery, setSearchQuery] = useState('');
   
   // Modal State
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(searchParams.get('action') === 'new_ticket');
 
   const fetchTickets = async () => {
     try {
