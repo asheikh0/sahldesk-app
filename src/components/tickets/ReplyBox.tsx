@@ -101,8 +101,8 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
           </div>
         )}
 
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center space-x-6 rtl:space-x-reverse">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 gap-3">
+          <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto space-x-4 sm:space-x-6 rtl:space-x-reverse">
             <label className="flex items-center space-x-2 rtl:space-x-reverse cursor-pointer text-sm text-slate-600">
               <input 
                 type="checkbox" 
@@ -110,10 +110,10 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
                 onChange={e => setIsInternal(e.target.checked)}
                 className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 cursor-pointer"
               />
-              <span className={isInternal ? 'font-medium text-amber-700' : ''}>{t('Internal Note (Staff only)')}</span>
+              <span className={isInternal ? 'font-medium text-amber-700 whitespace-nowrap text-xs sm:text-sm' : 'whitespace-nowrap text-xs sm:text-sm'}>{t('Internal Note (Staff only)')}</span>
             </label>
 
-            <label className="flex items-center space-x-2 rtl:space-x-reverse cursor-pointer text-sm text-blue-600 hover:text-blue-700 font-medium">
+            <label className="flex items-center space-x-1 sm:space-x-2 rtl:space-x-reverse cursor-pointer text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap">
               <Paperclip size={16} />
               <span>{t('Attach File')}</span>
               <input 
@@ -128,7 +128,7 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
           <button 
             type="submit" 
             disabled={submitting || !content.trim()}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? '...' : t('Submit Reply')}
           </button>

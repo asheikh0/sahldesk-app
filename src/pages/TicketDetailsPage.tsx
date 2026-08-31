@@ -81,36 +81,36 @@ export default function TicketDetailsPage() {
     <div className="flex flex-col h-full bg-slate-50 relative">
       
       {/* Header Info */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-4 rtl:space-x-reverse">
-          <Link to="/inbox" className="text-slate-400 hover:text-slate-600 transition-colors">
+      <div className="bg-white border-b border-slate-200 px-4 md:px-6 py-4 flex items-start justify-between">
+        <div className="flex items-start space-x-3 rtl:space-x-reverse w-full">
+          <Link to="/inbox" className="text-slate-400 hover:text-slate-600 transition-colors mt-1 shrink-0">
             <ArrowLeft size={20} className="rtl:rotate-180" />
           </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 leading-tight">#{ticket.id} - {ticket.subject || (ticket as any).title || (ticket as any).Title || 'No Subject'}</h1>
-            <div className="flex items-center space-x-3 rtl:space-x-reverse text-sm mt-1.5">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight break-words">#{ticket.id} - {ticket.subject || (ticket as any).title || (ticket as any).Title || 'No Subject'}</h1>
+            <div className="flex flex-wrap items-center gap-2 mt-2 text-xs md:text-sm">
               {ticket.category && (
-                <div className="flex items-center text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium">
+                <div className="flex items-center text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium whitespace-nowrap">
                   <div className="w-2 h-2 rounded-full mr-1.5 rtl:mr-0 rtl:ml-1.5" style={{ backgroundColor: categoryObj?.color || '#cbd5e1' }}></div>
                   {ticket.category}
                 </div>
               )}
-              <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium">{t('Priority')}: {t(ticket.priority)}</span>
+              <span className="text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-medium whitespace-nowrap">{t('Priority')}: {t(ticket.priority)}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Control Action Bar (Sticky) */}
-      <div className="bg-slate-100/80 backdrop-blur-md border-b border-slate-200 px-6 py-3 sticky top-0 z-20 flex items-center shadow-sm">
-        <div className="flex flex-wrap items-center gap-4">
+      <div className="bg-slate-100/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 py-3 sticky top-0 z-20 shadow-sm">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           
-          <div className="flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600">{t('Status')}</span>
+          <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap">{t('Status')}</span>
             <select 
               value={ticket.status} 
               onChange={e => updateField('status', e.target.value)}
-              className="px-3 py-1.5 text-sm bg-transparent font-semibold text-slate-900 outline-none w-36 cursor-pointer"
+              className="flex-1 px-3 py-1.5 text-sm bg-transparent font-semibold text-slate-900 outline-none cursor-pointer"
             >
               <option value="Open">{t('Open')}</option>
               <option value="In Progress">{t('In Progress')}</option>
@@ -123,12 +123,12 @@ export default function TicketDetailsPage() {
             </div>
           </div>
 
-          <div className="flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600"><UserIcon size={14} className="inline mr-1 rtl:ml-1"/> {t('Agent')}</span>
+          <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap"><UserIcon size={14} className="inline mr-1 rtl:ml-1"/> {t('Agent')}</span>
             <select 
               value={ticket.agent?.id || ''} 
               onChange={e => updateField('agentId', e.target.value ? Number(e.target.value) : null)}
-              className="px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none w-48 cursor-pointer"
+              className="flex-1 px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none cursor-pointer"
             >
               <option value="">-- {t('Unassigned')} --</option>
               {agents.map(a => (
@@ -141,12 +141,12 @@ export default function TicketDetailsPage() {
           </div>
 
           {subStatuses.length > 0 && (
-            <div className="flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-              <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600">{t('Sub-Status')}</span>
+            <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+              <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap">{t('Sub-Status')}</span>
               <select 
                 value={ticket.subStatus?.id || ''} 
                 onChange={e => updateField('subStatusId', e.target.value ? Number(e.target.value) : null)}
-                className="px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none w-40 cursor-pointer"
+                className="flex-1 px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none cursor-pointer"
               >
                 <option value="">-- None --</option>
                 {subStatuses.map(s => (
@@ -169,10 +169,10 @@ export default function TicketDetailsPage() {
           <div className="flex-1 space-y-6 pb-4">
             
             {/* Original Ticket Description */}
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-              <div className="flex justify-between items-start mb-3">
-                <div className="font-semibold text-slate-900 text-lg">{ticket.customer.firstName || ticket.customer.lastName || ticket.customer.email}</div>
-                <div className="text-xs text-slate-500 flex items-center bg-slate-100 px-2 py-1 rounded">
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm border border-slate-200">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-2">
+                <div className="font-semibold text-slate-900 text-base md:text-lg min-w-0 break-words">{ticket.customer.firstName || ticket.customer.lastName || ticket.customer.email}</div>
+                <div className="text-xs text-slate-500 flex items-center bg-slate-100 px-2 py-1 rounded w-fit shrink-0">
                   <Clock size={12} className="mr-1.5 rtl:ml-1.5" />
                   {new Date(ticket.createdDate).toLocaleString()}
                 </div>
@@ -201,25 +201,25 @@ export default function TicketDetailsPage() {
             {/* Comments */}
             {ticket.comments?.map(comment => (
               <div key={comment.id} className={`p-5 rounded-lg shadow-sm border ${
-                comment.isInternal ? 'bg-amber-50/60 border-amber-200 ml-12 rtl:ml-0 rtl:mr-12' :
-                comment.isStaffReply ? 'bg-blue-50/60 border-blue-200 ml-12 rtl:ml-0 rtl:mr-12' : 
-                'bg-white border-slate-200 mr-12 rtl:mr-0 rtl:ml-12'
+                comment.isInternal ? 'bg-amber-50/60 border-amber-200 ml-4 md:ml-12 rtl:ml-0 rtl:md:ml-0 rtl:mr-4 rtl:md:mr-12' :
+                comment.isStaffReply ? 'bg-blue-50/60 border-blue-200 ml-4 md:ml-12 rtl:ml-0 rtl:md:ml-0 rtl:mr-4 rtl:md:mr-12' : 
+                'bg-white border-slate-200 mr-4 md:mr-12 rtl:mr-0 rtl:md:mr-0 rtl:ml-4 rtl:md:ml-12'
               }`}>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                    <span className="font-semibold text-slate-900 text-md">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-3 gap-2">
+                  <div className="flex flex-wrap items-center gap-2 min-w-0">
+                    <span className="font-semibold text-slate-900 text-sm md:text-base truncate max-w-full">
                       {comment.user?.firstName || comment.user?.lastName || comment.user?.email || 'Unknown'}
                     </span>
                     {comment.isInternal && (
-                      <span className="flex items-center text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded border border-amber-200">
+                      <span className="flex items-center text-[10px] md:text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded border border-amber-200 whitespace-nowrap">
                         <Lock size={10} className="mr-1 rtl:ml-1" /> INTERNAL
                       </span>
                     )}
                     {comment.isStaffReply && !comment.isInternal && (
-                      <span className="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded border border-blue-200">STAFF</span>
+                      <span className="text-[10px] md:text-xs font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded border border-blue-200 whitespace-nowrap">STAFF</span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-500">{new Date(comment.createdDate).toLocaleString()}</div>
+                  <div className="text-xs text-slate-500 shrink-0">{new Date(comment.createdDate).toLocaleString()}</div>
                 </div>
                 
                 <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">{comment.content}</div>
@@ -247,7 +247,7 @@ export default function TicketDetailsPage() {
 
           {/* Sidebar */}
           <div className="w-full md:w-72 space-y-4">
-            <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+            <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm border border-slate-200">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center">
                 <UserIcon size={14} className="mr-2 rtl:ml-2" /> Customer Profile
               </h3>
@@ -264,7 +264,7 @@ export default function TicketDetailsPage() {
             </div>
 
             {ticket.referenceId && (
-              <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+              <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm border border-slate-200">
                 <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center">
                   <Tag size={14} className="mr-2 rtl:ml-2" /> Reference
                 </h3>
