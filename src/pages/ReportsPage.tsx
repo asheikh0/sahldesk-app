@@ -74,7 +74,7 @@ export default function ReportsPage() {
   };
 
   const statusDoughnutData = {
-    labels: stats?.statusSummary?.map(s => s.status) || [],
+    labels: stats?.statusSummary?.map(s => t(s.status)) || [],
     datasets: [
       {
         data: stats?.statusSummary?.map(s => s.count) || [],
@@ -86,7 +86,7 @@ export default function ReportsPage() {
   };
 
   const categoryPieData = {
-    labels: stats?.categoryDistribution?.map(c => c.category) || [],
+    labels: stats?.categoryDistribution?.map(c => t(c.category)) || [],
     datasets: [
       {
         data: stats?.categoryDistribution?.map(c => c.count) || [],
@@ -103,7 +103,7 @@ export default function ReportsPage() {
   };
 
   const priorityBarData = {
-    labels: stats?.priorityDistribution?.map(p => p.priority) || [],
+    labels: stats?.priorityDistribution?.map(p => t(p.priority)) || [],
     datasets: [
       {
         label: t('Tickets by Priority'),

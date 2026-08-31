@@ -106,6 +106,23 @@ export default function TicketDetailsPage() {
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           
           <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap"><UserIcon size={14} className="inline mr-1 rtl:ml-1"/> {t('Agent')}</span>
+            <select 
+              value={ticket.agent?.id || ''} 
+              onChange={e => updateField('agentId', e.target.value ? Number(e.target.value) : null)}
+              className="flex-1 px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none cursor-pointer"
+            >
+              <option value="">-- {t('Unassigned')} --</option>
+              {agents.map(a => (
+                <option key={a.id} value={a.id}>{a.firstName || a.lastName || a.email}</option>
+              ))}
+            </select>
+            <div className="w-8 flex justify-center items-center">
+              {savingField === 'agentId' ? <CheckCircle2 size={16} className="text-green-500 animate-in fade-in" /> : null}
+            </div>
+          </div>
+
+          <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
             <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap">{t('Status')}</span>
             <select 
               value={ticket.status} 
@@ -120,23 +137,6 @@ export default function TicketDetailsPage() {
             </select>
             <div className="w-8 flex justify-center items-center">
               {savingField === 'status' ? <CheckCircle2 size={16} className="text-green-500 animate-in fade-in" /> : null}
-            </div>
-          </div>
-
-          <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
-            <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap"><UserIcon size={14} className="inline mr-1 rtl:ml-1"/> {t('Agent')}</span>
-            <select 
-              value={ticket.agent?.id || ''} 
-              onChange={e => updateField('agentId', e.target.value ? Number(e.target.value) : null)}
-              className="flex-1 px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none cursor-pointer"
-            >
-              <option value="">-- {t('Unassigned')} --</option>
-              {agents.map(a => (
-                <option key={a.id} value={a.id}>{a.firstName || a.lastName || a.email}</option>
-              ))}
-            </select>
-            <div className="w-8 flex justify-center items-center">
-              {savingField === 'agentId' ? <CheckCircle2 size={16} className="text-green-500 animate-in fade-in" /> : null}
             </div>
           </div>
 

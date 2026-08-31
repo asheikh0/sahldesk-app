@@ -84,7 +84,7 @@ export default function CategoriesPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700">{t('Category Name')}</label>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} required className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm" />
+              <input type="text" value={name} onChange={e => setName(e.target.value)} required className="mt-1 block w-full md:max-w-md rounded-md border border-slate-300 px-3 py-2 text-sm" />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700">{t('Color')}</label>
@@ -104,7 +104,7 @@ export default function CategoriesPage() {
           <table className="w-full min-w-[550px] divide-y divide-slate-200">
             <thead className="bg-slate-50">
               <tr>
-                <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Category Name')}</th>
+                <th className="px-6 py-3 text-start text-xs font-medium text-slate-500 uppercase tracking-wider w-1/2">{t('Category Name')}</th>
                                 <th className="px-6 py-3 text-end text-xs font-medium text-slate-500 uppercase tracking-wider">{t('Actions')}</th>
               </tr>
             </thead>

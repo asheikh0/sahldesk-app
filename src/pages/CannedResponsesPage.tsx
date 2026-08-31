@@ -83,7 +83,7 @@ export default function CannedResponsesPage() {
           <thead className="bg-slate-50 text-slate-700 text-xs uppercase">
             <tr>
               <th className="px-6 py-3">{t('Title')}</th>
-              <th className="px-6 py-3">{t('Content Snippet')}</th>
+              <th className="px-6 py-3">{t('Content')}</th>
               <th className="px-6 py-3 text-right">{t('Actions')}</th>
             </tr>
           </thead>
