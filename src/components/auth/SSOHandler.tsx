@@ -19,7 +19,7 @@ export const SSOHandler = () => {
     const authenticate = async () => {
       let finalJwt = directToken;
       try {
-        const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://staging-api.sahldesk.com/api/v1';
+        const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://api.sahldesk.com/api/v1';
 
         // 1. If magic_token is provided
         if (magicToken && !finalJwt) {
@@ -63,7 +63,7 @@ export const SSOHandler = () => {
             ? err.response.data 
             : JSON.stringify(err.response.data, null, 2);
         }
-        setAuthError(`Endpoint: ${import.meta.env.VITE_API_BASE_URL || 'https://staging-api.sahldesk.com/api/v1'}\nError: ${errorMsg}`);
+        setAuthError(`Endpoint: ${import.meta.env.VITE_API_BASE_URL || 'https://api.sahldesk.com/api/v1'}\nError: ${errorMsg}`);
         
         // DO NOT navigate away if there's an error so the user can see the error screen!
       }

@@ -21,6 +21,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
   const { language, toggleLanguage, t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isEmbedded = window.self !== window.top;
+  const isStaging = window.location.hostname.includes('staging') || window.location.hostname === 'localhost';
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden relative">
@@ -63,9 +64,11 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
         <div className="p-4 border-t border-slate-800 text-sm flex flex-col space-y-3">
           <div className="text-slate-400 flex justify-between items-center">
             <span>{user?.email}</span>
-            <button onClick={toggleDevPro} className="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded flex items-center gap-1" title="Dev Toggle: Plan">
-               <Shield size={12}/> {isPro ? 'Pro' : 'Free'}
-            </button>
+            {isStaging && (
+              <button onClick={toggleDevPro} className="text-xs bg-slate-800 hover:bg-slate-700 px-2 py-1 rounded flex items-center gap-1" title="Dev Toggle: Plan">
+                 <Shield size={12}/> {isPro ? 'Pro' : 'Free'}
+              </button>
+            )}
           </div>
           <button onClick={toggleLanguage} className="flex items-center space-x-2 hover:text-white transition-colors text-slate-300 rtl:space-x-reverse">
             <Globe size={16} /> <span>{language === 'en' ? 'عربي' : 'English'}</span>
