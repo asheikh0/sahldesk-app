@@ -7,7 +7,7 @@ export const SSOHandler = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginWithToken } = useAuth();
+  const { loginWithToken, setAuthError } = useAuth();
 
   useEffect(() => {
     const directToken = searchParams.get('token')?.trim();
@@ -17,8 +17,8 @@ export const SSOHandler = () => {
     const adminName = searchParams.get('admin_name')?.trim();
 
     const authenticate = async () => {
+      let finalJwt = directToken;
       try {
-        let finalJwt = directToken;
         const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://staging-api.sahldesk.com/api/v1';
 
         // 1. If magic_token is provided
@@ -26,6 +26,8 @@ export const SSOHandler = () => {
           const res = await axios.post(`${apiBase}/Users/magic-login`, { token: magicToken });
           if (res.data && res.data.token) {
             finalJwt = res.data.token;
+          } else {
+            throw new Error('Magic login succeeded but returned no token.');
           }
         }
 
@@ -34,25 +36,36 @@ export const SSOHandler = () => {
           const ssoRes = await axios.post(`${apiBase}/Users/sso`, { email: adminEmail, name: adminName || 'Admin' }, { headers: { 'X-Api-Key': apiKey } });
           if (ssoRes.data && ssoRes.data.token) {
             finalJwt = ssoRes.data.token;
+          } else {
+            throw new Error('SSO login succeeded but returned no token.');
           }
         }
 
         if (finalJwt) {
           await loginWithToken(finalJwt, apiKey);
+          // Success! Clear URL params
+          const cleanSearch = new URLSearchParams(location.search);
+          cleanSearch.delete('token');
+          cleanSearch.delete('magic_token');
+          cleanSearch.delete('admin_email');
+          cleanSearch.delete('admin_name');
+          const cleanPath = location.pathname + (cleanSearch.toString() ? `?${cleanSearch.toString()}` : '');
+          navigate(cleanPath, { replace: true });
+        } else {
+          throw new Error('No valid token or SSO credentials provided in URL.');
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('SSO Authentication failed:', err);
-      } finally {
-        // Always strip parameters to break infinite load loops on both success and failure
-        const cleanSearch = new URLSearchParams(location.search);
-        cleanSearch.delete('token');
-        cleanSearch.delete('magic_token');
-        cleanSearch.delete('admin_email');
-        cleanSearch.delete('admin_name');
-        // keep api_key if needed for the app, but remove the auth triggers
+        // Extract error message clearly
+        let errorMsg = err.message || 'Unknown error occurred.';
+        if (err.response && err.response.data) {
+          errorMsg = typeof err.response.data === 'string' 
+            ? err.response.data 
+            : JSON.stringify(err.response.data, null, 2);
+        }
+        setAuthError(`Endpoint: ${import.meta.env.VITE_API_BASE_URL || 'https://staging-api.sahldesk.com/api/v1'}\nError: ${errorMsg}`);
         
-        const cleanPath = location.pathname + (cleanSearch.toString() ? `?${cleanSearch.toString()}` : '');
-        navigate(cleanPath, { replace: true });
+        // DO NOT navigate away if there's an error so the user can see the error screen!
       }
     };
 

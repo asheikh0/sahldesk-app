@@ -13,6 +13,8 @@ interface AuthContextType {
   loading: boolean;
   isPro: boolean;
   toggleDevPro: () => void;
+  authError: string | null;
+  setAuthError: (error: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
   const [isPro, setIsPro] = useState(localStorage.getItem('dev_isPro') === 'true');
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     if (token) {
@@ -29,7 +32,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setIsLoading(false);
   }, []); // Run once on mount
-
 
   const toggleDevPro = () => {
     const newStatus = !isPro;
@@ -44,6 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('token', newToken);
     setToken(newToken);
     setUser(response.data.user || { id: 1, email: data.email, role: 'Admin' });
+    setAuthError(null);
   };
 
   const loginWithToken = async (newToken: string, apiKey: string) => {
@@ -51,16 +54,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('token', newToken);
     setToken(newToken);
     setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+    setAuthError(null);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    setAuthError(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, loginWithToken, logout, isLoading, loading: isLoading, isPro, toggleDevPro }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, loginWithToken, logout, isLoading, loading: isLoading, isPro, toggleDevPro, authError, setAuthError }}>
       {children}
     </AuthContext.Provider>
   );
