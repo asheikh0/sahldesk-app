@@ -28,9 +28,9 @@ jobs:
       - name: FTP Deploy to SmarterASP.NET
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.SMARTERASP_PRODUCTION_FTP_SERVER }}
-          username: ${{ secrets.SMARTERASP_PRODUCTION_FTP_USER }}
-          password: ${{ secrets.SMARTERASP_PRODUCTION_FTP_PASSWORD }}
+          server: ${{ secrets.SMARTERASP_PROD_FTP_SERVER }}
+          username: ${{ secrets.SMARTERASP_PROD_FTP_USER }}
+          password: ${{ secrets.SMARTERASP_PROD_FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: ${{ secrets.SMARTERASP_PRODUCTION_FTP_PATH }}/
+          server-dir: ${{ secrets.SMARTERASP_PROD_FTP_PATH }}/
           timeout: 600000
