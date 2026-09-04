@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import { Ticket, User, Category, TicketSubStatus } from '../types/api';
 import ReplyBox from '../components/tickets/ReplyBox';
 import api from '../services/api';
@@ -9,6 +10,8 @@ import { ArrowLeft, User as UserIcon, Tag, Clock, Lock, ExternalLink, CheckCircl
 export default function TicketDetailsPage() {
   const { id } = useParams();
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const isCustomer = user?.role === 'Customer';
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [agents, setAgents] = useState<User[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -246,7 +249,8 @@ export default function TicketDetailsPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="w-full md:w-72 space-y-4">
+          {!isCustomer && (
+            <div className="w-full md:w-72 space-y-4">
             <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm border border-slate-200">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center">
                 <UserIcon size={14} className="mr-2 rtl:ml-2" /> Customer Profile
@@ -274,7 +278,8 @@ export default function TicketDetailsPage() {
                 </div>
               </div>
             )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
