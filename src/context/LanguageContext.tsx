@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'en' | 'ar';
 
@@ -157,6 +157,23 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlLang = params.get('lang');
+    if (urlLang && (urlLang === 'en' || urlLang === 'ar')) {
+      setLanguage(urlLang as Language);
+    } else {
+      const savedLang = localStorage.getItem('language');
+      if (savedLang === 'en' || savedLang === 'ar') {
+        setLanguage(savedLang as Language);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
 
   const toggleLanguage = () => {
     setLanguage(prev => (prev === 'en' ? 'ar' : 'en'));
