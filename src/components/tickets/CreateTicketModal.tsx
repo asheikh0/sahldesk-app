@@ -66,9 +66,11 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
       <div className={standalone ? "w-full overflow-hidden flex flex-col h-full" : "bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"}>
         <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
           <h2 className="text-lg font-bold text-slate-900">{t('New Ticket')}</h2>
-          {!standalone && <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">}
-            <X size={20} />
-          </button>}
+          {!standalone && (
+            <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+              <X size={20} />
+            </button>
+          )}
         </div>
         
         <form id="createTicketForm" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
