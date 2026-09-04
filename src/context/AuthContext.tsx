@@ -17,7 +17,28 @@ interface AuthContextType {
   setAuthError: (error: string | null) => void;
 }
 
+
+const decodeToken = (token: string): User | null => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const claims = JSON.parse(jsonPayload);
+    return {
+      id: claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || claims.sub || 1,
+      email: claims.email || claims['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || 'user@example.com',
+      role: claims['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || claims.role || 'Customer'
+    };
+  } catch (e) {
+    console.error('Failed to decode token', e);
+    return null;
+  }
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -28,7 +49,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (token) {
-      setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+      const decodedUser = decodeToken(token);
+      if (decodedUser) {
+        setUser(decodedUser);
+      } else {
+        setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+      }
     }
     setIsLoading(false);
   }, []); // Run once on mount
@@ -45,7 +71,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newToken = response.data.token;
     localStorage.setItem('token', newToken);
     setToken(newToken);
-    setUser(response.data.user || { id: 1, email: data.email, role: 'Admin' });
+    const decodedUser = decodeToken(newToken);
+    setUser(decodedUser || response.data.user || { id: 1, email: data.email, role: 'Admin' });
     setAuthError(null);
   };
 
@@ -53,7 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (apiKey) localStorage.setItem('apiKey', apiKey);
     localStorage.setItem('token', newToken);
     setToken(newToken);
-    setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
+    const decodedUser = decodeToken(newToken);
+    setUser(decodedUser || { id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
     setAuthError(null);
   };
 

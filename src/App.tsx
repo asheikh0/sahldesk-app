@@ -46,21 +46,25 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
           <Link to="/inbox" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
             <Inbox size={18} /> <span>{t('Inbox')}</span>
           </Link>
-          <Link to="/categories" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
-            <Tag size={18} /> <span>{t('Categories')}</span>
-          </Link>
-          <Link to="/reports" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
-            <BarChart2 size={18} /> <span>{t('Reports')}</span>
-          </Link>
-          <Link to="/canned-responses" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
-            <MessageSquare size={18} /> <span>{t('Canned Responses')}</span>
-          </Link>
-          <Link to="/sub-statuses" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
-            <Activity size={18} /> <span>{t('Sub-Statuses')}</span>
-          </Link>
-          <Link to="/users" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
-            <Users size={18} /> <span>{t('Team')}</span>
-          </Link>
+          {user?.role !== 'Customer' && (
+            <>
+              <Link to="/categories" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+                <Tag size={18} /> <span>{t('Categories')}</span>
+              </Link>
+              <Link to="/reports" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+                <BarChart2 size={18} /> <span>{t('Reports')}</span>
+              </Link>
+              <Link to="/canned-responses" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+                <MessageSquare size={18} /> <span>{t('Canned Responses')}</span>
+              </Link>
+              <Link to="/sub-statuses" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+                <Activity size={18} /> <span>{t('Sub-Statuses')}</span>
+              </Link>
+              <Link to="/users" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
+                <Users size={18} /> <span>{t('Team')}</span>
+              </Link>
+            </>
+          )}
         </nav>
         <div className="p-4 border-t border-slate-800 text-sm flex flex-col space-y-3">
           <div className="text-slate-400 flex justify-between items-center">
