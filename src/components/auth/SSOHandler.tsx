@@ -10,11 +10,20 @@ export const SSOHandler = () => {
   const { loginWithToken, setAuthError } = useAuth();
 
   useEffect(() => {
-    const directToken = searchParams.get('token')?.trim();
-    const magicToken = searchParams.get('magic_token')?.trim();
+    const rawToken = searchParams.get('token')?.trim();
+    let magicToken = searchParams.get('magic_token')?.trim();
     const apiKey = searchParams.get('api_key')?.trim() || '';
     const adminEmail = searchParams.get('admin_email')?.trim();
     const adminName = searchParams.get('admin_name')?.trim();
+
+    let directToken = undefined;
+    if (rawToken) {
+      if (rawToken.includes('.')) {
+        directToken = rawToken;
+      } else {
+        magicToken = rawToken;
+      }
+    }
 
     const authenticate = async () => {
       let finalJwt = directToken;
