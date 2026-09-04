@@ -25,8 +25,8 @@ export default function TicketDetailsPage() {
     try {
       const [ticketRes, agentsRes, catRes, subRes] = await Promise.all([
         api.get(`/Tickets/${id}`),
-        api.get('/Users/agents'),
-        api.get('/Categories'),
+        api.get('/Users/agents').catch(() => ({ data: [] })),
+        api.get('/Categories').catch(() => ({ data: [] })),
         api.get('/ticketsubstatuses').catch(() => ({ data: [] }))
       ]);
       setTicket(ticketRes.data);
