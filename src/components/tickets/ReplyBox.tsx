@@ -13,7 +13,8 @@ interface ReplyBoxProps {
 export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
   const { t } = useLanguage();
   const [content, setContent] = useState('');
-  const { isPro } = useAuth();
+  const { isPro, user } = useAuth();
+  const isCustomer = user?.role === 'Customer';
   const [isInternal, setIsInternal] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -103,15 +104,17 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 gap-3">
           <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto space-x-4 sm:space-x-6 rtl:space-x-reverse">
-            <label className="flex items-center space-x-2 rtl:space-x-reverse cursor-pointer text-sm text-slate-600">
-              <input 
-                type="checkbox" 
-                checked={isInternal} 
-                onChange={e => setIsInternal(e.target.checked)}
-                className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 cursor-pointer"
-              />
-              <span className={isInternal ? 'font-medium text-amber-700 whitespace-nowrap text-xs sm:text-sm' : 'whitespace-nowrap text-xs sm:text-sm'}>{t('Internal Note (Staff only)')}</span>
-            </label>
+            {!isCustomer && (
+              <label className="flex items-center space-x-2 rtl:space-x-reverse cursor-pointer text-sm text-slate-600">
+                <input 
+                  type="checkbox" 
+                  checked={isInternal} 
+                  onChange={e => setIsInternal(e.target.checked)}
+                  className="rounded text-amber-500 focus:ring-amber-500 w-4 h-4 cursor-pointer"
+                />
+                <span className={isInternal ? 'font-medium text-amber-700 whitespace-nowrap text-xs sm:text-sm' : 'whitespace-nowrap text-xs sm:text-sm'}>{t('Internal Note (Staff only)')}</span>
+              </label>
+            )}
 
             <label className="flex items-center space-x-1 sm:space-x-2 rtl:space-x-reverse cursor-pointer text-sm text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap">
               <Paperclip size={16} />
