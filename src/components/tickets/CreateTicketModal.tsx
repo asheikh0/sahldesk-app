@@ -5,12 +5,13 @@ import api from '../../services/api';
 import { X, Paperclip } from 'lucide-react';
 
 interface CreateTicketModalProps {
+  standalone?: boolean;
   isOpen: boolean;
   onClose: () => void;
   onTicketCreated: () => void;
 }
 
-export default function CreateTicketModal({ isOpen, onClose, onTicketCreated }: CreateTicketModalProps) {
+export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, standalone }: CreateTicketModalProps) {
   const { t } = useLanguage();
   const [categories, setCategories] = useState<Category[]>([]);
   const [title, setTitle] = useState('');
@@ -61,13 +62,13 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated }: 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className={standalone ? "w-full h-full bg-white" : "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"}>
+      <div className={standalone ? "w-full overflow-hidden flex flex-col h-full" : "bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"}>
         <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
           <h2 className="text-lg font-bold text-slate-900">{t('New Ticket')}</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+          {!standalone && <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">}
             <X size={20} />
-          </button>
+          </button>}
         </div>
         
         <form id="createTicketForm" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
@@ -120,7 +121,7 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated }: 
         </form>
         
         <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end space-x-3 rtl:space-x-reverse">
-          <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 bg-slate-100 rounded-md transition-colors">{t('Cancel')}</button>
+          {!standalone && <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 bg-slate-100 rounded-md transition-colors">{t('Cancel')}</button>}
           <button type="submit" form="createTicketForm" disabled={submitting} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors disabled:opacity-50">
             {submitting ? '...' : t('Create Ticket')}
           </button>

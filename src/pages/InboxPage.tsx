@@ -20,6 +20,8 @@ export default function InboxPage() {
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(searchParams.get('action') === 'new_ticket');
+  const isEmbedded = searchParams.get('wp_embedded') === '1';
+  const isStandaloneForm = isEmbedded && searchParams.get('action') === 'new_ticket';
 
   const fetchTickets = async () => {
     try {
@@ -71,6 +73,8 @@ export default function InboxPage() {
     }
     return result;
   }, [tickets, activeTab, searchQuery]);
+
+  if (isStandaloneForm) return <CreateTicketModal isOpen={true} onClose={() => {}} onTicketCreated={() => { window.location.href = "/inbox?wp_embedded=1"; }} standalone={true} />;
 
   return (
     <div className="p-6 h-full flex flex-col">
