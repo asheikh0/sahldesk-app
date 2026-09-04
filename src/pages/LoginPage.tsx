@@ -40,7 +40,7 @@ export default function LoginPage() {
     setLoading(true);
     setMessage('');
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/request-magic-link`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.sahldesk.com/api/v1'}/users/request-magic-link`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
