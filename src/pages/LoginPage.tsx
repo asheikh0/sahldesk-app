@@ -45,7 +45,7 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, language: localStorage.getItem('language') || 'en' }),
+        body: JSON.stringify({ email, language: localStorage.getItem('language') || 'en', apiKey }),
       });
       
       if (response.ok) {
@@ -76,7 +76,7 @@ export default function LoginPage() {
             className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${mode === 'customer' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
             onClick={() => { setMode('customer'); setMessage(''); }}
           >
-            Customer Access
+            Passwordless Login
           </button>
           <button
             type="button"
