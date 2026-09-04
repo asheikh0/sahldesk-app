@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
+import WidgetPage from './pages/WidgetPage';
 import InboxPage from './pages/InboxPage';
 import TicketDetailsPage from './pages/TicketDetailsPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -101,6 +102,7 @@ export default function App() {
           <SSOHandler />
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/widget" element={<WidgetPage />} />
             
             {/* Protected Routes */}
             <Route path="/inbox" element={<ProtectedRoute><AppShell><InboxPage /></AppShell></ProtectedRoute>} />
