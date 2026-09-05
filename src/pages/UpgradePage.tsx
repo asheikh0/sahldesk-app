@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import { Check, X, Sparkles, Shield, Lock, Star } from 'lucide-react';
 
 export default function UpgradePage() {
   const { t, language } = useLanguage();
+  const [searchParams] = useSearchParams();
   const { user, isPro } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual');
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,11 @@ export default function UpgradePage() {
   const handleUpgrade = async () => {
     if (isPro) return;
     setLoading(true);
-    const checkoutUrl = `https://checkout.freemius.com/product/23268/plan/39017/?billing_cycle=${billingCycle}&locale=${isArabic ? 'ar' : 'en'}${user?.email ? '&user_email=' + encodeURIComponent(user.email) : ''}`;
+    const wpAdmin = searchParams.get('wp_admin');
+    let checkoutUrl = `https://checkout.freemius.com/product/23268/plan/39017/?billing_cycle=${billingCycle}&locale=${isArabic ? 'ar' : 'en'}${user?.email ? '&user_email=' + encodeURIComponent(user.email) : ''}`;
+    if (wpAdmin) {
+      checkoutUrl += `&success_url=${encodeURIComponent(wpAdmin)}`;
+    }
 
     const isEmbedded = window.self !== window.top;
     if (isEmbedded) {
