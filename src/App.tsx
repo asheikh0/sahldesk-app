@@ -11,9 +11,10 @@ import ReportsPage from './pages/ReportsPage';
 import CannedResponsesPage from './pages/CannedResponsesPage';
 import SubStatusesPage from './pages/SubStatusesPage';
 import TeamPage from './pages/TeamPage';
+import UpgradePage from './pages/UpgradePage';
 import { SSOHandler } from './components/auth/SSOHandler';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { LogOut, Globe, Tag, Inbox, Menu, X, BarChart2, MessageSquare, Activity, Users, Shield } from 'lucide-react';
+import { LogOut, Globe, Tag, Inbox, Menu, X, BarChart2, MessageSquare, Activity, Users, Shield, Sparkles } from 'lucide-react';
 
 
 
@@ -63,6 +64,11 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
               <Link to="/users" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
                 <Users size={18} /> <span>{t('Team')}</span>
               </Link>
+              {!isPro && (
+                <Link to="/upgrade" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-amber-400 font-medium rtl:space-x-reverse">
+                  <Sparkles size={18} /> <span>{t('Upgrade')}</span>
+                </Link>
+              )}
             </>
           )}
         </nav>
@@ -116,6 +122,7 @@ export default function App() {
             <Route path="/canned-responses" element={<ProtectedRoute><AppShell><CannedResponsesPage /></AppShell></ProtectedRoute>} />
             <Route path="/sub-statuses" element={<ProtectedRoute><AppShell><SubStatusesPage /></AppShell></ProtectedRoute>} />
             <Route path="/users" element={<ProtectedRoute><AppShell><TeamPage /></AppShell></ProtectedRoute>} />
+            <Route path="/upgrade" element={<ProtectedRoute><AppShell><UpgradePage /></AppShell></ProtectedRoute>} />
             
             <Route path="*" element={<Navigate to="/inbox" replace />} />
           </Routes>
