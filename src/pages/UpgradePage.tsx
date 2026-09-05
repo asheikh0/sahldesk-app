@@ -14,7 +14,7 @@ export default function UpgradePage() {
   const handleUpgrade = async () => {
     if (isPro) return;
     setLoading(true);
-    const checkoutUrl = `https://checkout.freemius.com/product/23268/plan/13840/?billing_cycle=${billingCycle}&locale=${isArabic ? 'ar' : 'en'}${user?.email ? '&user_email=' + encodeURIComponent(user.email) : ''}`;
+    const checkoutUrl = `https://checkout.freemius.com/product/23268/plan/39017/?billing_cycle=${billingCycle}&locale=${isArabic ? 'ar' : 'en'}${user?.email ? '&user_email=' + encodeURIComponent(user.email) : ''}`;
 
     const isEmbedded = window.self !== window.top;
     if (isEmbedded) {
@@ -40,7 +40,7 @@ export default function UpgradePage() {
       const FS = (window as any).FS;
       const handler = FS.Checkout.configure({
         plugin_id: '23268',
-        plan_id: '13840',
+        plan_id: '39017',
         public_key: 'pk_22da665e521f5fdea813737e64420',
         image: 'https://sahldesk.com/logo.png'
       });
