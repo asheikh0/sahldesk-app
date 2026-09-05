@@ -10,6 +10,22 @@ interface LanguageContextType {
 
 const translations = {
   en: {
+    'Welcome back to your support portal': 'Welcome back to your support portal',
+    'Passwordless Login': 'Passwordless Login',
+    'Staff Login': 'Staff Login',
+    'Enter your email to receive a secure, passwordless login link.': 'Enter your email to receive a secure, passwordless login link.',
+    'Email Address': 'Email Address',
+    'Password': 'Password',
+    'API Key': 'API Key',
+    'Sending...': 'Sending...',
+    'Send Magic Link': 'Send Magic Link',
+    'Signing in...': 'Signing in...',
+    'Sign In': 'Sign In',
+    'Login failed. Please check your credentials.': 'Login failed. Please check your credentials.',
+    'If your email exists in our system, a secure login link has been sent to your inbox.': 'If your email exists in our system, a secure login link has been sent to your inbox.',
+    'Failed to request magic link.': 'Failed to request magic link.',
+    'An error occurred. Please try again.': 'An error occurred. Please try again.',
+
     'Inbox': 'Inbox',
     'Categories': 'Categories',
     'Sign Out': 'Sign Out',
@@ -75,6 +91,22 @@ const translations = {
     'No agent performance data available yet.': 'No agent performance data available yet.'
   },
     ar: {
+    'Welcome back to your support portal': 'مرحباً بك مرة أخرى في بوابة الدعم الخاصة بك',
+    'Passwordless Login': 'تسجيل دخول بدون كلمة مرور',
+    'Staff Login': 'تسجيل دخول الموظفين',
+    'Enter your email to receive a secure, passwordless login link.': 'أدخل بريدك الإلكتروني لتلقي رابط تسجيل دخول آمن وبدون كلمة مرور.',
+    'Email Address': 'البريد الإلكتروني',
+    'Password': 'كلمة المرور',
+    'API Key': 'مفتاح API',
+    'Sending...': 'جاري الإرسال...',
+    'Send Magic Link': 'إرسال رابط الدخول',
+    'Signing in...': 'جاري تسجيل الدخول...',
+    'Sign In': 'تسجيل الدخول',
+    'Login failed. Please check your credentials.': 'فشل تسجيل الدخول. يرجى التحقق من بياناتك.',
+    'If your email exists in our system, a secure login link has been sent to your inbox.': 'تم إرسال رابط الدخول إلى بريدك الإلكتروني بنجاح.',
+    'Failed to request magic link.': 'فشل في طلب رابط الدخول.',
+    'An error occurred. Please try again.': 'حدث خطأ. يرجى المحاولة مرة أخرى.',
+
     'Inbox': 'البريد الوارد',
     'Categories': 'التصنيفات',
     'Sign Out': 'تسجيل الخروج',
