@@ -62,8 +62,8 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
   };
 
   return (
-    <div className={standalone ? "w-full h-full bg-white" : "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"}>
-      <div className={standalone ? "w-full overflow-hidden flex flex-col h-full" : "bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"}>
+    <div className={standalone ? "w-full min-h-screen bg-transparent py-4 px-2 sm:px-4 flex justify-center items-start" : "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"}>
+      <div className={standalone ? "w-full max-w-2xl bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col my-auto sm:my-2" : "bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"}>
         <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
           <h2 className="text-lg font-bold text-slate-900">{t('New Ticket')}</h2>
           {!standalone && (
@@ -79,7 +79,7 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
             <input type="text" value={title} onChange={e => setTitle(e.target.value)} required className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">{t('Category')}</label>
               <select value={categoryId} onChange={e => setCategoryId(e.target.value)} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
