@@ -217,7 +217,7 @@ const translations = {
     'Resolved Count': 'العدد المحلول',
     'No agent performance data available yet.': 'لا تتوفر بيانات أداء للموظفين حتى الآن.',
     'Upgrade': 'الترقية',
-    'Upgrade to SahlDesk Pro': 'الترقية إلى سهل ديسك برو',
+    'Upgrade to SahlDesk Pro': 'الترقية إلى SahlDesk Pro',
     'Unlock full analytics, canned responses, team agent roles, and WooCommerce RMA returns.': 'افتح التحليلات المتقدمة، والردود الجاهزة، وأدوار فريق العمل، ونظام إرجاع طلبات ووكومرس RMA.',
     'Monthly': 'شهري',
     'Yearly': 'سنوي',
