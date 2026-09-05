@@ -14,6 +14,17 @@ export default function UpgradePage() {
   const handleUpgrade = async () => {
     if (isPro) return;
     setLoading(true);
+    const checkoutUrl = `https://checkout.freemius.com/product/23268/plan/13840/?billing_cycle=${billingCycle}&locale=${isArabic ? 'ar' : 'en'}${user?.email ? '&user_email=' + encodeURIComponent(user.email) : ''}`;
+
+    const isEmbedded = window.self !== window.top;
+    if (isEmbedded) {
+      // In embedded iframe, cross-origin security prevents modal from capturing top window.
+      // Open the official Freemius hosted checkout directly in a new tab for seamless payment.
+      window.open(checkoutUrl, '_blank');
+      setLoading(false);
+      return;
+    }
+
     try {
       if (!(window as any).FS?.Checkout) {
         await new Promise((resolve, reject) => {
@@ -44,7 +55,6 @@ export default function UpgradePage() {
       });
     } catch (err) {
       console.error('Freemius checkout load error, falling back to direct checkout URL:', err);
-      const checkoutUrl = `https://checkout.freemius.com/checkout/?plugin_id=23268&plan_id=13840&billing_cycle=${billingCycle}&locale=${isArabic ? 'ar' : 'en'}${user?.email ? '&user_email=' + encodeURIComponent(user.email) : ''}`;
       window.open(checkoutUrl, '_blank');
     } finally {
       setLoading(false);
