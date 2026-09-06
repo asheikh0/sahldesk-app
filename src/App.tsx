@@ -4,6 +4,7 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import WidgetPage from './pages/WidgetPage';
+import RmaPage from './pages/RmaPage';
 import InboxPage from './pages/InboxPage';
 import TicketDetailsPage from './pages/TicketDetailsPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -113,6 +114,7 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/widget" element={<WidgetPage />} />
+            <Route path="/rma" element={<RmaPage />} />
             
             {/* Protected Routes */}
             <Route path="/inbox" element={<ProtectedRoute><AppShell><InboxPage /></AppShell></ProtectedRoute>} />
