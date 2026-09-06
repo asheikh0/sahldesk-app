@@ -11,7 +11,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ShieldCheck,
-  Clock
+  Clock,
+  ExternalLink
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -24,6 +25,7 @@ export default function RmaPage() {
   const apiKey = searchParams.get('api_key') || '';
   const initialEmail = searchParams.get('customer_email') || searchParams.get('email') || '';
   const initialName = searchParams.get('customer_name') || searchParams.get('name') || '';
+  const returnUrl = searchParams.get('return_url') || searchParams.get('store_url') || '';
 
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(initialEmail);
@@ -35,6 +37,7 @@ export default function RmaPage() {
   const [error, setError] = useState('');
   const [existingTicketId, setExistingTicketId] = useState<number | null>(null);
   const [createdTicketId, setCreatedTicketId] = useState<number | null>(null);
+  const [closeNotice, setCloseNotice] = useState(false);
 
   const isRtl = language === 'ar';
 
@@ -56,6 +59,28 @@ export default function RmaPage() {
       }
       setFile(selected);
       setError('');
+    }
+  };
+
+  const handleClose = () => {
+    // 1. Try closing window if opened via script
+    try {
+      window.close();
+    } catch (e) {
+      console.log('window.close error:', e);
+    }
+
+    // 2. If window remains open (modern browsers block window.close for user-opened tabs):
+    if (returnUrl) {
+      window.location.href = returnUrl;
+    } else if (window.opener) {
+      try {
+        window.close();
+      } catch (e) {}
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      setCloseNotice(true);
     }
   };
 
@@ -180,13 +205,33 @@ export default function RmaPage() {
                 </div>
               </div>
 
-              <button
-                onClick={() => window.close()}
-                className="inline-flex items-center space-x-2 rtl:space-x-reverse px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl shadow transition"
-              >
-                <span>{t('Close')}</span>
-                {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
-              </button>
+              {/* Actions Area */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+                {returnUrl ? (
+                  <a
+                    href={returnUrl}
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 rtl:space-x-reverse px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-600/20 transition"
+                  >
+                    <span>{t('Back to Order')}</span>
+                    {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
+                  </a>
+                ) : null}
+
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 rtl:space-x-reverse px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl shadow transition"
+                >
+                  <span>{t('Close')}</span>
+                  {returnUrl ? <ExternalLink size={14} /> : (isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />)}
+                </button>
+              </div>
+
+              {closeNotice && (
+                <p className="mt-4 text-xs text-slate-500">
+                  {t('You may now safely close this tab.')}
+                </p>
+              )}
             </div>
           ) : (
             /* FORM STATE */

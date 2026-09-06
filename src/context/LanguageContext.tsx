@@ -153,7 +153,10 @@ const translations = {
     "View Existing Ticket": "View Existing Ticket",
     "Close": "Close",
     "Max file size: 10MB": "Max file size: 10MB",
-    "Our team will review your request and get back to you by email shortly.": "Our team will review your request and get back to you by email shortly."
+    "Our team will review your request and get back to you by email shortly.": "Our team will review your request and get back to you by email shortly.",
+    "Back to Order": "Back to Order",
+    "Close Window": "Close Window",
+    "You may now safely close this tab.": "You may now safely close this tab."
   },
     ar: {
     'Welcome back to your support portal': 'مرحباً بك مرة أخرى في بوابة الدعم الخاصة بك',
@@ -310,7 +313,10 @@ const translations = {
     "View Existing Ticket": "عرض التذكرة الحالية",
     "Close": "إغلاق",
     "Max file size: 10MB": "الحد الأقصى لحجم الملف: 10 ميجابايت",
-    "Our team will review your request and get back to you by email shortly.": "سيقوم فريق الدعم بمراجعة طلبك والتواصل معك عبر البريد الإلكتروني قريباً."
+    "Our team will review your request and get back to you by email shortly.": "سيقوم فريق الدعم بمراجعة طلبك والتواصل معك عبر البريد الإلكتروني قريباً.",
+    "Back to Order": "العودة إلى الطلب",
+    "Close Window": "إغلاق النافذة",
+    "You may now safely close this tab.": "يمكنك الآن إغلاق هذا التبويب بأمان."
   }
 };
 
