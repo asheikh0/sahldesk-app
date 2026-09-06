@@ -6,8 +6,9 @@ interface Props {
 }
 
 export default function ProFeatureGate({ featureName }: Props) {
-  const { t } = useLanguage();
-  const upgradeUrl = "https://checkout.freemius.com/?billing_cycle=annual&plugin_id=23268&public_key=pk_22da665e521f5fdea813737e64420";
+  const { t, language } = useLanguage();
+  const isArabic = language === 'ar';
+  const upgradeUrl = `https://checkout.freemius.com/product/23268/plan/39017/?billing_cycle=annual&locale=${isArabic ? 'ar' : 'en'}`;
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-white rounded-lg shadow-sm border border-slate-100 m-6 min-h-[400px]">

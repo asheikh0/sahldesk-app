@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User, LoginDto } from '../types/api';
 import api from '../services/api';
 
@@ -12,11 +12,12 @@ interface AuthContextType {
   isLoading: boolean;
   loading: boolean;
   isPro: boolean;
+  setIsPro: (isPro: boolean) => void;
+  refreshPlan: () => Promise<void>;
   toggleDevPro: () => void;
   authError: string | null;
   setAuthError: (error: string | null) => void;
 }
-
 
 const decodeToken = (token: string): User | null => {
   try {
@@ -37,15 +38,48 @@ const decodeToken = (token: string): User | null => {
   }
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const getInitialProStatus = (): boolean => {
+  try {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('is_pro')) {
+      const fromUrl = searchParams.get('is_pro') === '1' || searchParams.get('is_pro') === 'true';
+      localStorage.setItem('is_pro', fromUrl ? 'true' : 'false');
+      return fromUrl;
+    }
+  } catch {}
+  return localStorage.getItem('is_pro') === 'true' || localStorage.getItem('dev_isPro') === 'true';
+};
 
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
-  const [isPro, setIsPro] = useState(localStorage.getItem('dev_isPro') === 'true');
+  const [isPro, setIsProState] = useState<boolean>(getInitialProStatus);
   const [authError, setAuthError] = useState<string | null>(null);
+
+  const setIsPro = (status: boolean) => {
+    setIsProState(status);
+    localStorage.setItem('is_pro', status ? 'true' : 'false');
+  };
+
+  const refreshPlan = useCallback(async () => {
+    try {
+      const apiKey = localStorage.getItem('apiKey');
+      const currentToken = localStorage.getItem('token');
+      if (!apiKey && !currentToken) return;
+
+      const response = await api.get('/Companies/plan');
+      if (response.data) {
+        const planIsPro = response.data.plan?.toLowerCase() === 'pro' || response.data.isPro === true;
+        setIsProState(planIsPro);
+        localStorage.setItem('is_pro', planIsPro ? 'true' : 'false');
+      }
+    } catch (err) {
+      console.warn('Failed to sync plan status with backend:', err);
+    }
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -55,9 +89,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         setUser({ id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
       }
+      refreshPlan();
+    } else {
+      const apiKey = localStorage.getItem('apiKey');
+      if (apiKey) {
+        refreshPlan();
+      }
     }
     setIsLoading(false);
-  }, []); // Run once on mount
+  }, [token, refreshPlan]);
 
   const toggleDevPro = () => {
     const newStatus = !isPro;
@@ -74,6 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const decodedUser = decodeToken(newToken);
     setUser(decodedUser || response.data.user || { id: 1, email: data.email, role: 'Admin' });
     setAuthError(null);
+    await refreshPlan();
   };
 
   const loginWithToken = async (newToken: string, apiKey: string) => {
@@ -83,6 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const decodedUser = decodeToken(newToken);
     setUser(decodedUser || { id: 1, email: 'admin@sahldesk.com', role: 'Admin' });
     setAuthError(null);
+    await refreshPlan();
   };
 
   const logout = () => {
@@ -93,7 +135,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, login, loginWithToken, logout, isLoading, loading: isLoading, isPro, toggleDevPro, authError, setAuthError }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      isAuthenticated: !!token, 
+      login, 
+      loginWithToken, 
+      logout, 
+      isLoading, 
+      loading: isLoading, 
+      isPro, 
+      setIsPro, 
+      refreshPlan, 
+      toggleDevPro, 
+      authError, 
+      setAuthError 
+    }}>
       {children}
     </AuthContext.Provider>
   );

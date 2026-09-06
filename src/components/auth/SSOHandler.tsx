@@ -7,7 +7,7 @@ export const SSOHandler = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { loginWithToken, setAuthError } = useAuth();
+  const { loginWithToken, setAuthError, setIsPro, refreshPlan } = useAuth();
 
   useEffect(() => {
     const rawToken = searchParams.get('token')?.trim();
@@ -15,6 +15,12 @@ export const SSOHandler = () => {
     const apiKey = searchParams.get('api_key')?.trim() || '';
     const adminEmail = searchParams.get('admin_email')?.trim();
     const adminName = searchParams.get('admin_name')?.trim();
+    const isProParam = searchParams.get('is_pro');
+
+    if (isProParam !== null) {
+      const isProBool = isProParam === '1' || isProParam === 'true';
+      setIsPro(isProBool);
+    }
 
     let directToken = undefined;
     if (rawToken) {
@@ -42,7 +48,11 @@ export const SSOHandler = () => {
 
         // 2. If embedded in WordPress with admin email & apiKey but no token
         if (!finalJwt && apiKey && adminEmail) {
-          const ssoRes = await axios.post(`${apiBase}/Users/sso`, { email: adminEmail, name: adminName || 'Admin' }, { headers: { 'X-Api-Key': apiKey } });
+          const ssoRes = await axios.post(
+            `${apiBase}/Users/sso`, 
+            { email: adminEmail, name: adminName || 'Admin' }, 
+            { headers: { 'X-Api-Key': apiKey } }
+          );
           if (ssoRes.data && ssoRes.data.token) {
             finalJwt = ssoRes.data.token;
           } else {
@@ -52,7 +62,9 @@ export const SSOHandler = () => {
 
         if (finalJwt) {
           await loginWithToken(finalJwt, apiKey);
-          // Success! Clear URL params
+          await refreshPlan();
+
+          // Success! Clear URL auth params
           const cleanSearch = new URLSearchParams(location.search);
           cleanSearch.delete('token');
           cleanSearch.delete('magic_token');
@@ -73,8 +85,6 @@ export const SSOHandler = () => {
             : JSON.stringify(err.response.data, null, 2);
         }
         setAuthError(`Endpoint: ${import.meta.env.VITE_API_BASE_URL || 'https://api.sahldesk.com/api/v1'}\nError: ${errorMsg}`);
-        
-        // DO NOT navigate away if there's an error so the user can see the error screen!
       }
     };
 
