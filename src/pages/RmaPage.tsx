@@ -12,7 +12,6 @@ import {
   ArrowRight,
   ShieldCheck,
   Clock,
-  ExternalLink
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -63,25 +62,16 @@ export default function RmaPage() {
   };
 
   const handleClose = () => {
-    // 1. Try closing window if opened via script
     try {
       window.close();
     } catch (e) {
       console.log('window.close error:', e);
     }
 
-    // 2. If window remains open (modern browsers block window.close for user-opened tabs):
-    if (returnUrl) {
-      window.location.href = returnUrl;
-    } else if (window.opener) {
-      try {
-        window.close();
-      } catch (e) {}
-    } else if (window.history.length > 1) {
-      window.history.back();
-    } else {
+    // If browser blocks window.close, display confirmation notice
+    setTimeout(() => {
       setCloseNotice(true);
-    }
+    }, 200);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -222,8 +212,8 @@ export default function RmaPage() {
                   onClick={handleClose}
                   className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 rtl:space-x-reverse px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl shadow transition"
                 >
+                  <X size={16} />
                   <span>{t('Close')}</span>
-                  {returnUrl ? <ExternalLink size={14} /> : (isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />)}
                 </button>
               </div>
 

@@ -23,8 +23,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login?from=api_interceptor';
+      const url = error.config?.url || '';
+      const isAuthEndpoint = url.includes('/Auth/login') || url.includes('request-magic-link') || url.includes('/Auth/magic-login');
+      const isOnLoginPage = typeof window !== 'undefined' && window.location.pathname.startsWith('/login');
+
+      // Do NOT reload or redirect if this is an authentication attempt or if user is already on the login page
+      if (!isAuthEndpoint && !isOnLoginPage) {
+        localStorage.removeItem('token');
+        const currentSearch = window.location.search;
+        window.location.href = `/login${currentSearch}`;
+      }
     }
     return Promise.reject(error);
   }

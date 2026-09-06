@@ -6,8 +6,12 @@ import { useNavigate } from 'react-router-dom';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [mode, setMode] = useState<'customer' | 'staff'>('customer');
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('apiKey') || '');
+  const [mode, setMode] = useState<'customer' | 'staff'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'staff') return 'staff';
+    return (localStorage.getItem('loginMode') as 'customer' | 'staff') || 'customer';
+  });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   
@@ -20,6 +24,12 @@ export default function LoginPage() {
     const urlApiKey = params.get('api_key');
     if (urlApiKey) {
       setApiKey(urlApiKey);
+      localStorage.setItem('apiKey', urlApiKey);
+    }
+    const urlMode = params.get('mode');
+    if (urlMode === 'staff') {
+      setMode('staff');
+      localStorage.setItem('loginMode', 'staff');
     }
   }, []);
 
@@ -36,8 +46,9 @@ export default function LoginPage() {
       } else {
         navigate('/inbox');
       }
-    } catch (err) {
-      setMessage(t('Login failed. Please check your credentials.'));
+    } catch (err: any) {
+      const backendMsg = err.response?.data?.message || err.response?.data?.error;
+      setMessage(backendMsg || t('Login failed. Please check your credentials.'));
     } finally {
       setLoading(false);
     }
@@ -95,7 +106,7 @@ export default function LoginPage() {
               {loading ? t('Sending...') : t('Send Magic Link')}
             </button>
             <div className="text-center mt-4">
-              <button type="button" onClick={() => { setMode('staff'); setMessage(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition-colors underline">
+              <button type="button" onClick={() => { setMode('staff'); localStorage.setItem('loginMode', 'staff'); setMessage(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition-colors underline">
                 {t('Staff Login')}
               </button>
             </div>
@@ -110,18 +121,18 @@ export default function LoginPage() {
               <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('Password')}</label>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="block w-full rounded-md border border-slate-300 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 transition-colors" placeholder="••••••••" dir="ltr" />
             </div>
-            {/* Only show API Key input if it's not present in the URL */}
-            {!new URLSearchParams(window.location.search).get('api_key') && (
+            {/* Only show API Key input if neither URL nor localStorage has it */}
+            {!(new URLSearchParams(window.location.search).get('api_key') || localStorage.getItem('apiKey')) && (
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('API Key')}</label>
-                <input type="text" value={apiKey} onChange={e => setApiKey(e.target.value)} required className="block w-full rounded-md border border-slate-300 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 transition-colors" placeholder="pk_..." dir="ltr" />
+                <input type="text" value={apiKey} onChange={e => { setApiKey(e.target.value); localStorage.setItem('apiKey', e.target.value); }} required className="block w-full rounded-md border border-slate-300 px-4 py-2.5 focus:border-blue-500 focus:ring-blue-500 transition-colors" placeholder="pk_..." dir="ltr" />
               </div>
             )}
             <button type="submit" disabled={loading} className="w-full bg-slate-900 text-white rounded-md py-2.5 font-semibold hover:bg-slate-800 transition-colors disabled:opacity-70 mt-4">
               {loading ? t('Signing in...') : t('Sign In')}
             </button>
             <div className="text-center mt-4">
-              <button type="button" onClick={() => { setMode('customer'); setMessage(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition-colors underline">
+              <button type="button" onClick={() => { setMode('customer'); localStorage.setItem('loginMode', 'customer'); setMessage(''); }} className="text-sm text-slate-500 hover:text-slate-700 transition-colors underline">
                 {t('Passwordless Login')}
               </button>
             </div>
