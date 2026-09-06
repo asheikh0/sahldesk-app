@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Category } from '../../types/api';
 import api from '../../services/api';
-import { X, Paperclip } from 'lucide-react';
+import { X, Paperclip, CheckCircle2, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 
 interface CreateTicketModalProps {
   standalone?: boolean;
@@ -12,7 +12,7 @@ interface CreateTicketModalProps {
 }
 
 export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, standalone }: CreateTicketModalProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [categories, setCategories] = useState<Category[]>([]);
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -20,6 +20,9 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [createdTicketId, setCreatedTicketId] = useState<number | null>(null);
+
+  const isRtl = language === 'ar';
 
   useEffect(() => {
     if (isOpen) {
@@ -27,8 +30,7 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
       const params = new URLSearchParams(window.location.search);
       const orderId = params.get('order_id') || params.get('reference_id');
       if (orderId && !title) {
-        const isArabic = localStorage.getItem('language') === 'ar';
-        setTitle(isArabic ? `طلب استرجاع / استفسار للطلب #${orderId}` : `Return Request / Inquiry for Order #${orderId}`);
+        setTitle(isRtl ? `طلب استرجاع / استفسار للطلب #${orderId}` : `Return Request / Inquiry for Order #${orderId}`);
       }
     }
   }, [isOpen]);
@@ -56,23 +58,120 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
         formData.append('channel', 'RMA');
       }
       
-      await api.post('/Tickets', formData, { headers: { 'Content-Type': 'multipart/form-data' }});
-      
-      onTicketCreated();
-      onClose();
-      // Reset
-      setTitle('');
-      setCategoryId('');
-      setPriority('Medium');
-      setDescription('');
-      setFile(null);
+      const response = await api.post('/Tickets', formData, { headers: { 'Content-Type': 'multipart/form-data' }});
+      const newTicketId = response.data?.id || response.data?.Id;
+
+      if (standalone) {
+        setCreatedTicketId(newTicketId || 1);
+        onTicketCreated();
+      } else {
+        onTicketCreated();
+        onClose();
+        // Reset
+        setTitle('');
+        setCategoryId('');
+        setPriority('Medium');
+        setDescription('');
+        setFile(null);
+      }
     } catch (err) {
       console.error(err);
-      alert('Failed to create ticket');
+      alert(t('An error occurred. Please try again.'));
     } finally {
       setSubmitting(false);
     }
   };
+
+  const handleViewTicket = () => {
+    const params = new URLSearchParams(window.location.search);
+    const portalUrl = params.get('portal_url');
+    if (portalUrl && window.self !== window.top && window.top) {
+      const sep = portalUrl.includes('?') ? '&' : '?';
+      window.top.location.href = `${portalUrl}${sep}ticket_id=${createdTicketId}`;
+    } else {
+      window.location.href = `/tickets/${createdTicketId}`;
+    }
+  };
+
+  const handleGoToPortal = () => {
+    const params = new URLSearchParams(window.location.search);
+    const portalUrl = params.get('portal_url');
+    if (portalUrl && window.self !== window.top && window.top) {
+      window.top.location.href = portalUrl;
+    } else {
+      window.location.href = '/inbox';
+    }
+  };
+
+  const handleResetForm = () => {
+    setCreatedTicketId(null);
+    setTitle('');
+    setCategoryId('');
+    setPriority('Medium');
+    setDescription('');
+    setFile(null);
+  };
+
+  // SUCCESS STATE FOR EMBEDDED / STANDALONE FORM
+  if (standalone && createdTicketId) {
+    const params = new URLSearchParams(window.location.search);
+    const portalUrl = params.get('portal_url');
+
+    return (
+      <div className="w-full min-h-[500px] bg-transparent py-6 px-4 flex justify-center items-center">
+        <div className="w-full max-w-lg bg-white rounded-2xl border border-slate-200 shadow-xl p-8 text-center">
+          <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-100">
+            <CheckCircle2 size={36} />
+          </div>
+
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">
+            {t('Ticket Created Successfully!')}
+          </h2>
+
+          <p className="text-sm text-slate-600 max-w-sm mx-auto mb-6 leading-relaxed">
+            {t('Your ticket has been received. Our support team will review it and reply by email shortly.')}
+          </p>
+
+          <div className="bg-slate-50 rounded-xl p-4 max-w-xs mx-auto border border-slate-100 mb-8">
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-slate-500">{t('Ticket ID')}:</span>
+              <span className="font-bold text-blue-600">#{createdTicketId}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={handleViewTicket}
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 rtl:space-x-reverse px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-blue-600/20 transition"
+            >
+              <span>{t('View Ticket')}</span>
+              {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
+            </button>
+
+            {portalUrl && (
+              <button
+                type="button"
+                onClick={handleGoToPortal}
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 rtl:space-x-reverse px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold rounded-xl transition"
+              >
+                <span>{t('Go to Support Portal')}</span>
+                <ExternalLink size={14} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleResetForm}
+              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 text-slate-500 hover:text-slate-800 text-sm font-medium transition"
+            >
+              <span>{t('Open Another Ticket')}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={standalone ? "w-full min-h-screen bg-transparent py-4 px-2 sm:px-4 flex justify-center items-start" : "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"}>

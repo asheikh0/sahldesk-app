@@ -42,6 +42,12 @@ export default function InboxPage() {
     fetchTickets();
   }, []);
 
+  useEffect(() => {
+    if (isEmbedded && !isStandaloneForm && window.self !== window.top) {
+      window.parent.postMessage({ type: 'SAHLDESK_EXPAND', width: '100%' }, '*');
+    }
+  }, [isEmbedded, isStandaloneForm]);
+
   const getCategoryColor = (catName?: string) => {
     const cat = categories.find(c => c.name === catName);
     return cat?.color || '#cbd5e1';
@@ -74,7 +80,7 @@ export default function InboxPage() {
     return result;
   }, [tickets, activeTab, searchQuery]);
 
-  if (isStandaloneForm) return <CreateTicketModal isOpen={true} onClose={() => {}} onTicketCreated={() => { window.location.href = "/inbox?wp_embedded=1"; }} standalone={true} />;
+  if (isStandaloneForm) return <CreateTicketModal isOpen={true} onClose={() => {}} onTicketCreated={() => {}} standalone={true} />;
 
   return (
     <div className="p-6 h-full flex flex-col">

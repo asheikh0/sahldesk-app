@@ -29,7 +29,13 @@ export default function LoginPage() {
     setMessage('');
     try {
       await login({ email, password }, apiKey);
-      navigate('/inbox');
+      const params = new URLSearchParams(window.location.search);
+      const portalUrl = params.get('portal_url');
+      if (portalUrl && window.self !== window.top && window.top) {
+        window.top.location.href = portalUrl;
+      } else {
+        navigate('/inbox');
+      }
     } catch (err) {
       setMessage(t('Login failed. Please check your credentials.'));
     } finally {

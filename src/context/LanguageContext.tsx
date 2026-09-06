@@ -156,7 +156,12 @@ const translations = {
     "Our team will review your request and get back to you by email shortly.": "Our team will review your request and get back to you by email shortly.",
     "Back to Order": "Back to Order",
     "Close Window": "Close Window",
-    "You may now safely close this tab.": "You may now safely close this tab."
+    "You may now safely close this tab.": "You may now safely close this tab.",
+    "Ticket Created Successfully!": "Ticket Created Successfully!",
+    "Your ticket has been received. Our support team will review it and reply by email shortly.": "Your ticket has been received. Our support team will review it and reply by email shortly.",
+    "Go to Support Portal": "Go to Support Portal",
+    "Open Another Ticket": "Open Another Ticket",
+    "View Ticket": "View Ticket"
   },
     ar: {
     'Welcome back to your support portal': 'مرحباً بك مرة أخرى في بوابة الدعم الخاصة بك',
@@ -316,7 +321,12 @@ const translations = {
     "Our team will review your request and get back to you by email shortly.": "سيقوم فريق الدعم بمراجعة طلبك والتواصل معك عبر البريد الإلكتروني قريباً.",
     "Back to Order": "العودة إلى الطلب",
     "Close Window": "إغلاق النافذة",
-    "You may now safely close this tab.": "يمكنك الآن إغلاق هذا التبويب بأمان."
+    "You may now safely close this tab.": "يمكنك الآن إغلاق هذا التبويب بأمان.",
+    "Ticket Created Successfully!": "تم إرسال تذكرتك بنجاح!",
+    "Your ticket has been received. Our support team will review it and reply by email shortly.": "تم استلام تذكرتك بنجاح، وسيقوم فريق الدعم بمراجعتها والرد عليك عبر البريد الإلكتروني قريباً.",
+    "Go to Support Portal": "الذهاب إلى بوابة الدعم",
+    "Open Another Ticket": "إنشاء تذكرة أخرى",
+    "View Ticket": "عرض التذكرة"
   }
 };
 

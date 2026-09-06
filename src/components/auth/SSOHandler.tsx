@@ -64,6 +64,12 @@ export const SSOHandler = () => {
           await loginWithToken(finalJwt, apiKey);
           await refreshPlan();
 
+          const portalUrl = searchParams.get('portal_url');
+          if (portalUrl && window.self !== window.top && window.top && location.pathname === '/login') {
+            window.top.location.href = portalUrl;
+            return;
+          }
+
           // Success! Clear URL auth params
           const cleanSearch = new URLSearchParams(location.search);
           cleanSearch.delete('token');
