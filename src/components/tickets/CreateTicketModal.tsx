@@ -24,6 +24,12 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
   useEffect(() => {
     if (isOpen) {
       api.get('/Categories').then(res => setCategories(res.data)).catch(console.error);
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('order_id') || params.get('reference_id');
+      if (orderId && !title) {
+        const isArabic = localStorage.getItem('language') === 'ar';
+        setTitle(isArabic ? `طلب استرجاع / استفسار للطلب #${orderId}` : `Return Request / Inquiry for Order #${orderId}`);
+      }
     }
   }, [isOpen]);
 
@@ -42,6 +48,13 @@ export default function CreateTicketModal({ isOpen, onClose, onTicketCreated, st
       if (cat) formData.append('category', cat.name);
       
       if (file) formData.append('attachment', file);
+      
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('order_id') || params.get('reference_id');
+      if (orderId) {
+        formData.append('referenceId', orderId);
+        formData.append('channel', 'RMA');
+      }
       
       await api.post('/Tickets', formData, { headers: { 'Content-Type': 'multipart/form-data' }});
       

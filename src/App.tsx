@@ -123,6 +123,7 @@ export default function App() {
             <Route path="/sub-statuses" element={<ProtectedRoute><AppShell><SubStatusesPage /></AppShell></ProtectedRoute>} />
             <Route path="/users" element={<ProtectedRoute><AppShell><TeamPage /></AppShell></ProtectedRoute>} />
             <Route path="/upgrade" element={<ProtectedRoute><AppShell><UpgradePage /></AppShell></ProtectedRoute>} />
+          <Route path="/tickets/new" element={<ProtectedRoute><AppShell><InboxPage /></AppShell></ProtectedRoute>} />
             
             <Route path="*" element={<Navigate to="/inbox" replace />} />
           </Routes>
