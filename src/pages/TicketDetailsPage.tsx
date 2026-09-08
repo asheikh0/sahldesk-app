@@ -46,10 +46,24 @@ export default function TicketDetailsPage() {
   const updateField = async (field: 'status' | 'agentId' | 'subStatusId', value: any) => {
     setSavingField(field);
     try {
-      await api.put(`/Tickets/${id}`, { [field]: value });
+      const payload: any = { [field]: value };
+      if (field === 'status') {
+        const validForNewStatus = subStatuses.some(s => s.id === ticket?.subStatus?.id && s.parentStatus === value);
+        if (!validForNewStatus && ticket?.subStatus) {
+          payload.subStatusId = null;
+        }
+      }
+      await api.put(`/Tickets/${id}`, payload);
       setTicket(prev => {
         if (!prev) return null;
-        if (field === 'status') return { ...prev, status: value };
+        if (field === 'status') {
+          const validForNewStatus = subStatuses.some(s => s.id === prev.subStatus?.id && s.parentStatus === value);
+          return { 
+            ...prev, 
+            status: value, 
+            subStatus: validForNewStatus ? prev.subStatus : undefined 
+          };
+        }
         if (field === 'agentId') return { ...prev, agent: agents.find(a => a.id === value) || undefined };
         if (field === 'subStatusId') return { ...prev, subStatus: subStatuses.find(s => s.id === value) || undefined };
         return prev;
@@ -72,6 +86,7 @@ export default function TicketDetailsPage() {
   if (!ticket) return <div className="p-8 text-center text-red-500">Ticket not found</div>;
 
   const categoryObj = categories.find(c => c.name === ticket.category);
+  const availableSubStatuses = subStatuses.filter(s => s.parentStatus === ticket.status);
 
   const resolveAttachmentUrl = (url?: string) => {
     if (!url) return null;
@@ -143,7 +158,7 @@ export default function TicketDetailsPage() {
             </div>
           </div>
 
-          {subStatuses.length > 0 && (
+          {availableSubStatuses.length > 0 && (
             <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
               <span className="px-3 py-1.5 bg-slate-50 border-r border-slate-300 rtl:border-r-0 rtl:border-l text-sm font-medium text-slate-600 whitespace-nowrap">{t('Sub-Status')}</span>
               <select 
@@ -151,8 +166,8 @@ export default function TicketDetailsPage() {
                 onChange={e => updateField('subStatusId', e.target.value ? Number(e.target.value) : null)}
                 className="flex-1 px-3 py-1.5 text-sm bg-transparent font-medium text-slate-900 outline-none cursor-pointer"
               >
-                <option value="">-- None --</option>
-                {subStatuses.filter(s => s.parentStatus === ticket.status).map(s => (
+                <option value="">-- {t('None')} --</option>
+                {availableSubStatuses.map(s => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
