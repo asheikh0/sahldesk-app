@@ -90,16 +90,18 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
           </button>
         </div>
       </aside>}
-      <main className="flex-1 overflow-hidden relative flex flex-col">
+      <main className="flex-1 min-h-0 overflow-hidden relative flex flex-col">
         {/* Mobile Header */ }
-        {!isEmbedded && <div className="md:hidden bg-white border-b border-slate-200 p-4 flex items-center shadow-sm">
+        {!isEmbedded && <div className="shrink-0 md:hidden bg-white border-b border-slate-200 p-4 flex items-center shadow-sm">
           <button onClick={() => setIsSidebarOpen(true)} className="text-slate-600 hover:text-slate-900">
             <Menu size={24} />
           </button>
           <span className="mx-4 font-semibold text-slate-800">SahlDesk App</span>
         </div>}
         
-        {children}
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+          {children}
+        </div>
       </main>
     </div>
   );

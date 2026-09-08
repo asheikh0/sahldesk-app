@@ -58,7 +58,7 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
   };
 
   return (
-    <div className="bg-white border-t border-slate-200 p-4 sticky bottom-0">
+    <div className="shrink-0 bg-white border-t border-slate-200 p-3 md:p-4 z-20 shadow-lg md:shadow-none">
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-3">
         {isPro && cannedResponses.length > 0 && (
           <div className="mb-2">
@@ -82,7 +82,7 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
             value={content}
             onChange={e => setContent(e.target.value)}
             placeholder={isInternal ? "Write an internal note..." : "Write a reply to the customer..."}
-            className={`w-full min-h-[100px] p-3 pb-10 border rounded-lg resize-y focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+            className={`w-full min-h-[75px] md:min-h-[100px] p-3 pb-10 border rounded-lg resize-y focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
               isInternal ? 'bg-amber-50/30 border-amber-300' : 'bg-white border-slate-300'
             }`}
             required

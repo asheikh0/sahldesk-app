@@ -81,10 +81,10 @@ export default function TicketDetailsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 relative">
+    <div className="flex flex-col flex-1 min-h-0 bg-slate-50 relative overflow-hidden">
       
       {/* Header Info */}
-      <div className="bg-white border-b border-slate-200 px-4 md:px-6 py-4 flex items-start justify-between">
+      <div className="shrink-0 bg-white border-b border-slate-200 px-4 md:px-6 py-3 md:py-4 flex items-start justify-between">
         <div className="flex items-start space-x-3 rtl:space-x-reverse w-full">
           <Link to="/inbox" className="text-slate-400 hover:text-slate-600 transition-colors mt-1 shrink-0">
             <ArrowLeft size={20} className="rtl:rotate-180" />
@@ -105,7 +105,7 @@ export default function TicketDetailsPage() {
       </div>
 
       {/* Control Action Bar (Sticky) */}
-      <div className="bg-slate-100/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 py-3 sticky top-0 z-20 shadow-sm">
+      <div className="shrink-0 bg-slate-100/80 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 py-2.5 md:py-3 shadow-sm z-10">
         <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           
           <div className="w-full flex items-center bg-white border border-slate-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 transition-all">
@@ -165,7 +165,7 @@ export default function TicketDetailsPage() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 pb-28 md:pb-8">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-6">
           
           {/* Main Conversation Stream */}
@@ -250,7 +250,7 @@ export default function TicketDetailsPage() {
 
           {/* Sidebar */}
           {!isCustomer && (
-            <div className="w-full md:w-72 space-y-4">
+            <div className="w-full md:w-72 space-y-4 mb-6 md:mb-0">
             <div className="bg-white p-4 md:p-5 rounded-lg shadow-sm border border-slate-200">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center">
                 <UserIcon size={14} className="mr-2 rtl:ml-2" /> Customer Profile
