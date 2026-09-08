@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { CannedResponse } from '../../types/api';
-import { Paperclip, X } from 'lucide-react';
+import { Paperclip, X, Zap, ChevronDown } from 'lucide-react';
 import api from '../../services/api';
 
 interface ReplyBoxProps {
@@ -19,6 +19,7 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [cannedResponses, setCannedResponses] = useState<CannedResponse[]>([]);
+  const [showCannedMenu, setShowCannedMenu] = useState(false);
 
   React.useEffect(() => {
     if (isPro) {
@@ -61,20 +62,50 @@ export default function ReplyBox({ ticketId, onReplyAdded }: ReplyBoxProps) {
     <div className="shrink-0 bg-white border-t border-slate-200 p-3 md:p-4 z-20 shadow-lg md:shadow-none">
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-3">
         {isPro && cannedResponses.length > 0 && (
-          <div className="mb-2">
-            <select 
-              className="text-sm border-slate-300 rounded-md text-slate-600 shadow-sm focus:ring-blue-500 focus:border-blue-500 max-w-xs"
-              onChange={(e) => {
-                const text = e.target.value;
-                if(text) setContent(prev => prev + (prev ? '\n\n' : '') + text);
-                e.target.value = "";
-              }}
+          <div className="relative inline-block mb-1">
+            <button
+              type="button"
+              onClick={() => setShowCannedMenu(!showCannedMenu)}
+              className="inline-flex items-center space-x-1.5 rtl:space-x-reverse px-2.5 py-1.5 text-xs sm:text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md border border-slate-200 transition-colors shadow-sm cursor-pointer"
             >
-              <option value="">{t('Insert Canned Response...')}</option>
-              {cannedResponses.map(r => (
-                <option key={r.id} value={r.content}>{r.title}</option>
-              ))}
-            </select>
+              <Zap size={14} className="text-amber-500 fill-amber-500" />
+              <span>{t('Canned Responses')}</span>
+              <ChevronDown size={14} className={`text-slate-500 transition-transform duration-150 ${showCannedMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showCannedMenu && (
+              <>
+                <div 
+                  className="fixed inset-0 z-30" 
+                  onClick={() => setShowCannedMenu(false)} 
+                />
+                <div className="absolute left-0 rtl:left-auto rtl:right-0 bottom-full mb-1.5 w-72 sm:w-80 max-h-60 overflow-y-auto bg-white rounded-lg shadow-xl border border-slate-200 z-40 py-1 divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="px-3 py-1.5 bg-slate-50 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                    {t('Select a response')}
+                  </div>
+                  {cannedResponses.map(r => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      onClick={() => {
+                        setContent(prev => prev + (prev ? '\n\n' : '') + r.content);
+                        setShowCannedMenu(false);
+                      }}
+                      className="w-full text-left rtl:text-right px-3 py-2 hover:bg-blue-50 transition-colors flex flex-col group cursor-pointer"
+                    >
+                      <span className="text-sm font-medium text-slate-800 group-hover:text-blue-600 truncate">
+                        {r.title}
+                      </span>
+                      {r.content && (
+                        <span className="text-xs text-slate-400 group-hover:text-blue-500/80 truncate mt-0.5">
+                          {r.content}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
         <div className="relative">

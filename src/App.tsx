@@ -108,6 +108,15 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function App() {
+  React.useEffect(() => {
+    const handleSelectChange = (e: Event) => {
+      if (e.target instanceof HTMLSelectElement) {
+        e.target.blur();
+      }
+    };
+    document.addEventListener('change', handleSelectChange);
+    return () => document.removeEventListener('change', handleSelectChange);
+  }, []);
   return (
     <LanguageProvider>
       <AuthProvider>
