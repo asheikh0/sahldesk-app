@@ -6,7 +6,10 @@ import { useNavigate } from 'react-router-dom';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('apiKey') || '');
+  const [apiKey, setApiKey] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('api_key') || localStorage.getItem('apiKey') || '';
+  });
   const [mode, setMode] = useState<'customer' | 'staff'>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode') === 'staff') return 'staff';
@@ -59,12 +62,13 @@ export default function LoginPage() {
     setLoading(true);
     setMessage('');
     try {
+const activeApiKey = apiKey || new URLSearchParams(window.location.search).get('api_key') || localStorage.getItem('apiKey') || '';
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.sahldesk.com/api/v1'}/users/request-magic-link`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, language: localStorage.getItem('language') || 'en', apiKey }),
+        body: JSON.stringify({ email, language: localStorage.getItem('language') || 'en', apiKey: activeApiKey }),
       });
       
       const data = await response.json().catch(() => null);

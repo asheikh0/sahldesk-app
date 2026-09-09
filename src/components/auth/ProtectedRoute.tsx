@@ -45,7 +45,7 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to={`/login${location.search}`} state={{ from: location }} replace />;
   }
 
   return children;
