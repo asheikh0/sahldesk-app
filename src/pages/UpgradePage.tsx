@@ -151,11 +151,23 @@ export default function UpgradePage() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Check size={18} className="text-emerald-500 flex-shrink-0" />
+                  <span>{t('Guest Tickets & Magic Links')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={18} className="text-emerald-500 flex-shrink-0" />
+                  <span>{t('Instant Email Notifications')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={18} className="text-emerald-500 flex-shrink-0" />
                   <span>{t('WooCommerce Order History Sync')}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check size={18} className="text-emerald-500 flex-shrink-0" />
                   <span>{t('Single Agent / Admin')}</span>
+                </li>
+                <li className="flex items-center gap-3 text-slate-400">
+                  <X size={18} className="flex-shrink-0" />
+                  <span className="line-through">{t('Inbound Email-to-Ticket')}</span>
                 </li>
                 <li className="flex items-center gap-3 text-slate-400">
                   <X size={18} className="flex-shrink-0" />
@@ -215,6 +227,10 @@ export default function UpgradePage() {
                 <li className="flex items-center gap-3 font-semibold text-blue-900">
                   <Check size={18} className="text-blue-600 flex-shrink-0" />
                   <span>{t('Everything in Free')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check size={18} className="text-blue-600 flex-shrink-0" />
+                  <span>{t('Inbound Email-to-Ticket Conversion')}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Check size={18} className="text-blue-600 flex-shrink-0" />
