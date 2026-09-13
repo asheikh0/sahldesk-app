@@ -25,6 +25,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isEmbedded = window.self !== window.top;
   const isStaging = window.location.hostname.includes('staging') || window.location.hostname === 'localhost';
+  const isWordPressUser = !!localStorage.getItem('wp_admin') || new URLSearchParams(window.location.search).has('wp_admin');
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden relative">
@@ -65,7 +66,7 @@ const AppShell = ({ children }: { children: React.ReactNode }) => {
               <Link to="/users" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-white font-medium rtl:space-x-reverse">
                 <Users size={18} /> <span>{t('Team')}</span>
               </Link>
-              {!isPro && (
+              {!isPro && !isWordPressUser && (
                 <Link to="/upgrade" className="flex items-center space-x-3 px-4 py-2 rounded-md hover:bg-slate-800 text-amber-400 font-medium rtl:space-x-reverse">
                   <Sparkles size={18} /> <span>{t('Upgrade')}</span>
                 </Link>

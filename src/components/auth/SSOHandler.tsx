@@ -16,6 +16,8 @@ export const SSOHandler = () => {
     const adminEmail = searchParams.get('admin_email')?.trim();
     const adminName = searchParams.get('admin_name')?.trim();
     const isProParam = searchParams.get('is_pro');
+    const wpAdmin = searchParams.get('wp_admin');
+    if (wpAdmin) localStorage.setItem('wp_admin', wpAdmin);
 
     if (isProParam !== null) {
       const isProBool = isProParam === '1' || isProParam === 'true';
