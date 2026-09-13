@@ -96,12 +96,12 @@ export default function InboxPage() {
       </div>
 
       <div className="bg-white rounded-t-lg shadow-sm border border-slate-200 border-b-0 p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="flex space-x-1 rtl:space-x-reverse bg-slate-100 p-1 rounded-md">
+        <div className="flex w-full sm:w-auto overflow-x-auto space-x-1 rtl:space-x-reverse bg-slate-100 p-1 rounded-md">
           {['All', 'Open', 'In Progress', 'Pending', 'Closed'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              className={`whitespace-nowrap flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
                 activeTab === tab ? 'bg-white shadow-sm text-blue-600' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
